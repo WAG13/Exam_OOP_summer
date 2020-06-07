@@ -1,0 +1,5 @@
+# ninja log v5
+1	444	613255612	CMakeFiles/main.dir/main.cpp.obj	6fe9ba893fd82ff0
+449	749	613255612	main.exe	3db7f5ba2dcc658b
+0	1220	613255621	CMakeFiles/tests.dir/Test/Test.cpp.obj	f6b43659221d33ae
+1223	1588	613255622	tests.exe	49cd1002e22e8645

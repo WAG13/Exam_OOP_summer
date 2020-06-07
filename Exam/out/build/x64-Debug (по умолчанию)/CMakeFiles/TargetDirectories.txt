@@ -1,0 +1,4 @@
+C:/Users/Citrus/Documents/git_repo/Exam_OOP_summer/Exam/out/build/x64-Debug (по умолчанию)/CMakeFiles/edit_cache.dir
+C:/Users/Citrus/Documents/git_repo/Exam_OOP_summer/Exam/out/build/x64-Debug (по умолчанию)/CMakeFiles/main.dir
+C:/Users/Citrus/Documents/git_repo/Exam_OOP_summer/Exam/out/build/x64-Debug (по умолчанию)/CMakeFiles/tests.dir
+C:/Users/Citrus/Documents/git_repo/Exam_OOP_summer/Exam/out/build/x64-Debug (по умолчанию)/CMakeFiles/rebuild_cache.dir
