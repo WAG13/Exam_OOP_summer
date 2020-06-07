@@ -2,6 +2,7 @@
 
 #include "doctest.h"
 #include "Trees/AVLTree.h"
+#include "Trees/BPlusTree.h"
 #include <vector>
 
 TEST_CASE("Data")
