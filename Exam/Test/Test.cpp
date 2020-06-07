@@ -1,6 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include "doctest.h"
+#include "Trees/AVLTree.h"
 #include <vector>
 
 TEST_CASE("Data")
@@ -31,6 +32,13 @@ TEST_CASE("Hash")
     SUBCASE("Hopscotch hashing")
     {
     }
+}
+
+TEST_CASE("Tree")
+{
+	SUBCASE("AVL tree")
+	{
+	}
 }
 
 TEST_CASE("Sorting")
