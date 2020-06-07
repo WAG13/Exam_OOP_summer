@@ -20,11 +20,11 @@ namespace lists
 		~AVLTree() override;
 
 		void add(const T& element) override;
-		void print_all(std::ostream& os) const override;
+		void printAll(std::ostream& os) const override;
 		bool remove(const Key& key) override;
 		bool contains(const Key& key) const override;
 		std::vector<T> find_all(const Key& min, const Key& max) const /*override*/;
-		void for_each(std::function<void(const T&)> func) const;
+		void forEach(std::function<void(const T&)> func) const override;
 
 		void print_as_tree(std::ostream& os) const;
 
@@ -46,7 +46,7 @@ namespace lists
 
 			void print(std::ostream& os, bool& first_element) const;
 			void print_as_tree(std::ostream& os, int levels) const;
-			void for_each(std::function<void(const T&)> func) const;
+			void forEach(std::function<void(const T&)> func) const;
 		};
 
 		Node* root = nullptr;
@@ -228,7 +228,7 @@ namespace lists
 		bool temp = false;
 		//        std::cout << "ADDING " << element << '\n';
 		add(root, new Node(element), temp);
-		//        print_all(std::cout);
+		//        printAll(std::cout);
 		//        std::cout << "\n\n\n";
 	}
 
@@ -549,7 +549,7 @@ namespace lists
 	}
 
 	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	void AVLTree<T, Key, GetKeyFunc>::print_all(std::ostream& os) const
+	void AVLTree<T, Key, GetKeyFunc>::printAll(std::ostream& os) const
 	{
 		os << "[ ";
 		if (root)
@@ -597,20 +597,20 @@ namespace lists
 	}
 
 	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	void AVLTree<T, Key, GetKeyFunc>::Node::for_each(std::function<void(const T&)> func) const
+	void AVLTree<T, Key, GetKeyFunc>::Node::forEach(std::function<void(const T&)> func) const
 	{
 		if (left)
-			left->for_each(func);
+			left->forEach(func);
 		func(value);
 		if (right)
-			right->for_each(func);
+			right->forEach(func);
 	}
 
 	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	void AVLTree<T, Key, GetKeyFunc>::for_each(std::function<void(const T&)> func) const
+	void AVLTree<T, Key, GetKeyFunc>::forEach(std::function<void(const T&)> func) const
 	{
 		if (root)
-			root->for_each(func);
+			root->forEach(func);
 	}
 
 	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
