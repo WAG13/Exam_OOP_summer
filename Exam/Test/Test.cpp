@@ -4,6 +4,7 @@
 #include "Trees/AVLTree.h"
 #include "Trees/BPlusTree.h"
 #include <vector>
+#include <memory>
 
 TEST_CASE("Data")
 {
@@ -39,6 +40,20 @@ TEST_CASE("Tree")
 {
 	SUBCASE("AVL tree")
 	{
+		std::unique_ptr<lists::AVLTreeSimple<int>> tree(new lists::AVLTreeSimple<int>());
+		tree->add(3);
+		tree->add(11);
+		tree->add(6);
+		tree->add(8);
+		REQUIRE(tree->contains(11));
+		REQUIRE(tree->contains(8));
+		REQUIRE(!tree->contains(12));
+
+		REQUIRE(tree->remove(6));
+		REQUIRE(!tree->contains(6));
+		REQUIRE(!tree->remove(12));
+		std::vector<int> result = tree->find_all(7, 14);
+		REQUIRE(result == std::vector<int> { 8, 11 });
 	}
 }
 

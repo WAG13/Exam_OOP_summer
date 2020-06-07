@@ -20,9 +20,18 @@ namespace lists
 		virtual void print_all(std::ostream& os) const = 0;
 		virtual bool remove(const Key& key) = 0;
 		virtual bool contains(const Key& key) const = 0;
-		virtual std::vector<T> find_all(const Key& min, const Key& max) const = 0;
+		//virtual std::vector<T> find_all(const Key& min, const Key& max) const = 0;
 		virtual void for_each(std::function<void(const T&)> func) const = 0;
 	};
+
+	namespace detail
+	{
+		template<typename T>
+		T getValueAsKey(const T& value)
+		{
+			return value;
+		}
+	}
 }
 
 #endif // SORTEDLIST_H

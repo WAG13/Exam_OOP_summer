@@ -3,6 +3,7 @@
 
 #include "SearchTree.h"
 
+#include <compare>
 #include <iostream>
 #include <functional>
 #include <queue>
@@ -22,8 +23,8 @@ namespace lists
 		void print_all(std::ostream& os) const override;
 		bool remove(const Key& key) override;
 		bool contains(const Key& key) const override;
-		std::vector<T> find_all(const Key& min, const Key& max) const override;
-		void for_each(std::function<void(const T&)> func) const override;
+		std::vector<T> find_all(const Key& min, const Key& max) const /*override*/;
+		void for_each(std::function<void(const T&)> func) const;
 
 		void print_as_tree(std::ostream& os) const;
 
@@ -60,6 +61,10 @@ namespace lists
 		bool remove_standard_bst(const Key& key, std::stack<Node**>& path);
 		void remove_node_standard_bst(Node** node, std::stack<Node**>& path);
 	};
+
+	template<typename T>
+	using AVLTreeSimple = AVLTree<T, T, detail::getValueAsKey<T>>;
+
 
 
 	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
@@ -546,13 +551,13 @@ namespace lists
 	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
 	void AVLTree<T, Key, GetKeyFunc>::print_all(std::ostream& os) const
 	{
-		os << "{ ";
+		os << "[ ";
 		if (root)
 		{
 			bool first_element = true;
 			root->print(os, first_element);
 		}
-		os << " }" << std::endl;
+		os << " ]" << std::endl;
 		//        #if DEBUG
 		print_as_tree(os);
 		//        #endif // DEBUG

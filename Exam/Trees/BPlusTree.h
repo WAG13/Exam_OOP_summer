@@ -28,7 +28,7 @@ namespace lists
 		void insertNonFull(const T& element, GetKeyFuncType<T, Key> getKeyFunc, size_t t);
 
 		//видалення елемента (передумова: values.size() > t - 1, якщо це не корінь)
-		void remove(const Key& key, GetKeyFuncType<T, Key> getKeyFunc, size_t t);
+		bool remove(const Key& key, GetKeyFuncType<T, Key> getKeyFunc, size_t t);
 
 		//для деструктора дерева
 		void deleteChildren();
@@ -156,7 +156,7 @@ namespace lists
 	}
 
 	template<typename T, typename Key>
-	void BPlusNode<T, Key>::remove(const Key& key, GetKeyFuncType<T, Key> getKeyFunc, size_t t)
+	bool BPlusNode<T, Key>::remove(const Key& key, GetKeyFuncType<T, Key> getKeyFunc, size_t t)
 	{
 		//передумова: values.size() > t - 1, якщо це не корінь
 		if (isLeaf)
@@ -169,10 +169,10 @@ namespace lists
 				if (getKeyFunc(values[i]) == key)
 				{
 					values.erase(values.begin() + i); //операція O(n)
-					return; //знайшли і видалили
+					return true; //знайшли і видалили
 				}
 			}
-			return; //не знайшли елемент
+			return false; //не знайшли елемент
 		}
 
 		//якщо це внутрішній вузол:
@@ -223,8 +223,7 @@ namespace lists
 				}
 
 				//тепер умова виконується
-				node->remove(key, getKeyFunc, t);
-				return;
+				return node->remove(key, getKeyFunc, t);
 			}
 			//аналогічно справа
 			if (i < children.size() - 1 && children[i + 1]->values.size() > t - 1)
@@ -257,8 +256,7 @@ namespace lists
 				}
 
 				//тепер умова виконується
-				node->remove(key, getKeyFunc, t);
-				return;
+				return node->remove(key, getKeyFunc, t);
 			}
 			//У обох сусідів по (t-1) ключу, об`єднаємо
 			if (i < children.size() - 1)
@@ -297,8 +295,7 @@ namespace lists
 				children.erase(children.begin() + i + 1);
 
 				//тепер умова виконується
-				node->remove(key, getKeyFunc, t);
-				return;
+				return node->remove(key, getKeyFunc, t);
 			}
 			if (i > 0)
 			{
@@ -335,8 +332,7 @@ namespace lists
 				children.erase(children.begin() + i);
 
 				//тепер умова виконується
-				leftBro->remove(key, getKeyFunc, t);
-				return;
+				return leftBro->remove(key, getKeyFunc, t);
 			}
 		}
 	}
@@ -387,7 +383,7 @@ namespace lists
 		void printStructure(std::ostream& os) const;
 		void printInOrder(std::ostream& os) const;
 		bool contains(const Key& key) const;
-		void remove(const Key& key);
+		bool remove(const Key& key);
 	private:
 		size_t t;
 		BPlusNode<T, Key>* root;
@@ -429,9 +425,9 @@ namespace lists
 	}
 
 	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	void BPlusTree<T, Key, GetKeyFunc>::remove(const Key& key)
+	bool BPlusTree<T, Key, GetKeyFunc>::remove(const Key& key)
 	{
-		root->remove(key, GetKeyFunc, t);
+		bool result = root->remove(key, GetKeyFunc, t);
 		//Зменшення висоти дерева
 		if (root->children.size() == 1)
 		{
@@ -439,6 +435,7 @@ namespace lists
 			delete root;
 			root = child;
 		}
+		return result;
 	}
 
 
