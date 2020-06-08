@@ -264,6 +264,14 @@ void testMap(Map<ValueT, KeyT>* map)
 	REQUIRE(!map->contains(4));
 
 	REQUIRE(map->getValues().size() == 1);
+
+	for (int i = 10; i < 100; i++)
+		map->set(i, "Item " + i);
+	REQUIRE(map->getValues().size() == 91);
+
+	for (int i = 10; i < 90; i += 2)
+		map->remove(i);
+	REQUIRE(map->getKVPs().size() == 51);
 }
 
 TEST_CASE("Map")
@@ -277,7 +285,7 @@ TEST_CASE("Map")
 
 	SUBCASE("B+ Tree Map")
 	{
-		std::unique_ptr<MapTreeType<std::string, int>> treeType(new MapTreeTypeBPlus<std::string, int>(2));
+		std::unique_ptr<MapTreeType<std::string, int>> treeType(new MapTreeTypeBPlus<std::string, int>(500));
 		std::unique_ptr<Map<std::string, int>> treeMap(new TreeMap(treeType.get()));
 		testMap(treeMap.get());
 	}
@@ -327,7 +335,7 @@ TEST_CASE("Set")
 
 	SUBCASE("Set Operations")
 	{
-		std::unique_ptr<SetTreeType<int>> treeType(new SetTreeTypeBPlus<int>(2));
+		std::unique_ptr<SetTreeType<int>> treeType(new SetTreeTypeAVL<int>());
 		std::unique_ptr<Set<int>> treeSet1(new TreeSet(treeType.get()));
 		treeSet1->insert(1);
 		treeSet1->insert(2);

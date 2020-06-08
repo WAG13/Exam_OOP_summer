@@ -99,7 +99,7 @@ namespace lists
 			//з child в this для розділення child та newNode
 
 			children.insert(children.begin() + index + 1, newNode); //операція O(n)
-			values.insert(values.begin() + index, child->values[t - 1]); //операція O(n)
+			values.insert(values.begin() + index, child->values[t - 2]); //операція O(n)
 
 			//Оновлюємо next
 			newNode->next = child->next;
