@@ -12,12 +12,17 @@
 
 namespace lists
 {
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	struct AVLTree : public SearchTree<T, Key, GetKeyFunc>
+	template<typename T, typename Key>
+	class AVLTree : public SearchTree<T, Key>
 	{
-		AVLTree()
+	public:
+		AVLTree(GetKeyFunc<T, Key> getKeyFunc, Comparator<Key> comparatorFunc)
+			: SearchTree(getKeyFunc, comparatorFunc),
+			  getKeyFunc(getKeyFunc),
+			  comparatorFunc(comparatorFunc)
 		{}
-		~AVLTree() override;
+
+		virtual ~AVLTree() override;
 
 		void add(const T& element) override;
 		void printAll(std::ostream& os) const override;
@@ -32,6 +37,8 @@ namespace lists
 		static const signed char LEFT_HEAVY = -1;
 		static const signed char BALANCED = 0;
 		static const signed char RIGHT_HEAVY = 1;
+		GetKeyFunc<T, Key> getKeyFunc;
+		Comparator<Key> comparatorFunc;
 
 		struct Node
 		{
@@ -56,19 +63,26 @@ namespace lists
 		static bool rotate_right(Node*& node);
 		static void rotate_right_left(Node*& node);
 		static void rotate_left_right(Node*& node);
-		static void add(Node*& current_node, Node* new_node, bool& recalculate_balance);
+		void add(Node*& current_node, Node* new_node, bool& recalculate_balance);
 
 		bool remove_standard_bst(const Key& key, std::stack<Node**>& path);
 		void remove_node_standard_bst(Node** node, std::stack<Node**>& path);
 	};
 
 	template<typename T>
-	using AVLTreeSimple = AVLTree<T, T, detail::getValueAsKey<T>>;
+	class AVLTreeSimple : public AVLTree<T, T>
+	{
+	public: 
+		AVLTreeSimple()
+			: AVLTree(detail::getValueAsKey<T>, detail::lessThan<T>)
+		{}
+	};
 
 
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	AVLTree<T, Key, GetKeyFunc>::~AVLTree()
+
+	template<typename T, typename Key>
+	AVLTree<T, Key>::~AVLTree()
 	{
 		std::queue<Node*> queue;
 		if (root)
@@ -87,8 +101,8 @@ namespace lists
 
 
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	bool AVLTree<T, Key, GetKeyFunc>::rotate_left(Node*& node)
+	template<typename T, typename Key>
+	bool AVLTree<T, Key>::rotate_left(Node*& node)
 	{
 #if DEBUG
 		std::cout << "rotate left ";
@@ -116,8 +130,8 @@ namespace lists
 		return height_changed;
 	}
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	bool AVLTree<T, Key, GetKeyFunc>::rotate_right(Node*& node)
+	template<typename T, typename Key>
+	bool AVLTree<T, Key>::rotate_right(Node*& node)
 	{
 #if DEBUG
 		std::cout << "rotate right ";
@@ -144,8 +158,8 @@ namespace lists
 		return height_changed;
 	}
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	void AVLTree<T, Key, GetKeyFunc>::rotate_left_right(Node*& node)
+	template<typename T, typename Key>
+	void AVLTree<T, Key>::rotate_left_right(Node*& node)
 	{
 #if DEBUG
 		std::cout << "rotate left right ";
@@ -181,8 +195,8 @@ namespace lists
 
 
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	void AVLTree<T, Key, GetKeyFunc>::rotate_right_left(Node*& node)
+	template<typename T, typename Key>
+	void AVLTree<T, Key>::rotate_right_left(Node*& node)
 	{
 #if DEBUG
 		std::cout << "rotate right left ";
@@ -217,8 +231,8 @@ namespace lists
 	}
 
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	void AVLTree<T, Key, GetKeyFunc>::add(const T& element)
+	template<typename T, typename Key>
+	void AVLTree<T, Key>::add(const T& element)
 	{
 		if (!root)
 		{
@@ -235,8 +249,8 @@ namespace lists
 	//Entirely recursive algorithm https://cis.stvincent.edu/html/tutorials/swd/avltrees/avltrees.html
 	//The advantage is that we don't have to calculate the height when rebalancing
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	void AVLTree<T, Key, GetKeyFunc>::add(Node*& current_node, Node* new_node, bool& recalculate_balance)
+	template<typename T, typename Key>
+	void AVLTree<T, Key>::add(Node*& current_node, Node* new_node, bool& recalculate_balance)
 	{
 		if (!current_node)
 		{
@@ -246,7 +260,7 @@ namespace lists
 		}
 
 		bool should_rebalance_current = false;
-		if (GetKeyFunc(new_node->value) <=> GetKeyFunc(current_node->value) < 0)
+		if (comparatorFunc(getKeyFunc(new_node->value), getKeyFunc(current_node->value)))
 		{
 			add(current_node->left, new_node, should_rebalance_current);
 			if (should_rebalance_current)
@@ -328,8 +342,8 @@ namespace lists
 
 
 	//iterative approach
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	bool AVLTree<T, Key, GetKeyFunc>::remove(const Key& key)
+	template<typename T, typename Key>
+	bool AVLTree<T, Key>::remove(const Key& key)
 	{
 #if DEBUG
 		std::cout << "REMOVING " << element << '\n';
@@ -448,8 +462,8 @@ namespace lists
 	}
 
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	bool AVLTree<T, Key, GetKeyFunc>::remove_standard_bst(const Key& key, std::stack<Node**>& path)
+	template<typename T, typename Key>
+	bool AVLTree<T, Key>::remove_standard_bst(const Key& key, std::stack<Node**>& path)
 	{
 		if (!root)
 		{
@@ -458,21 +472,21 @@ namespace lists
 		Node** current_node = &root;
 		while (current_node)
 		{
-			auto compare_result = key <=> GetKeyFunc((*current_node)->value);
-			if (compare_result < 0 && (*current_node)->left)
+			if (key == getKeyFunc((*current_node)->value))
+			{
+				remove_node_standard_bst(current_node, path);
+				return true;
+			}
+			bool keyLess = comparatorFunc(key, getKeyFunc((*current_node)->value));
+			if (keyLess && (*current_node)->left)
 			{
 				path.push(current_node);
 				current_node = &(*current_node)->left;
 			}
-			else if (compare_result > 0 && (*current_node)->right)
+			else if (!keyLess && (*current_node)->right)
 			{
 				path.push(current_node);
 				current_node = &(*current_node)->right;
-			}
-			else if (compare_result == 0)
-			{
-				remove_node_standard_bst(current_node, path);
-				return true;
 			}
 			else
 			{
@@ -486,8 +500,8 @@ namespace lists
 	}
 
 	//Returns true if deleted right child, false is left
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	void AVLTree<T, Key, GetKeyFunc>::remove_node_standard_bst(Node** node, std::stack<Node**>& path)
+	template<typename T, typename Key>
+	void AVLTree<T, Key>::remove_node_standard_bst(Node** node, std::stack<Node**>& path)
 	{
 		if ((*node)->left)
 		{
@@ -532,8 +546,8 @@ namespace lists
 	}
 
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	void AVLTree<T, Key, GetKeyFunc>::Node::print(std::ostream& os, bool& first_element) const
+	template<typename T, typename Key>
+	void AVLTree<T, Key>::Node::print(std::ostream& os, bool& first_element) const
 	{
 		if (left)
 			left->print(os, first_element);
@@ -548,8 +562,8 @@ namespace lists
 			right->print(os, first_element);
 	}
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	void AVLTree<T, Key, GetKeyFunc>::printAll(std::ostream& os) const
+	template<typename T, typename Key>
+	void AVLTree<T, Key>::printAll(std::ostream& os) const
 	{
 		os << "[ ";
 		if (root)
@@ -563,8 +577,8 @@ namespace lists
 		//        #endif // DEBUG
 	}
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	void AVLTree<T, Key, GetKeyFunc>::Node::print_as_tree(std::ostream& os, int levels) const
+	template<typename T, typename Key>
+	void AVLTree<T, Key>::Node::print_as_tree(std::ostream& os, int levels) const
 	{
 		for (int i = 0; i < levels; i++)
 			os << " - ";
@@ -586,8 +600,8 @@ namespace lists
 		}
 	}
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	void AVLTree<T, Key, GetKeyFunc>::print_as_tree(std::ostream& os) const
+	template<typename T, typename Key>
+	void AVLTree<T, Key>::print_as_tree(std::ostream& os) const
 	{
 		std::queue<Node*> queue;
 		if (root)
@@ -596,8 +610,8 @@ namespace lists
 			os << "Empty tree!\n";
 	}
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	void AVLTree<T, Key, GetKeyFunc>::Node::forEach(std::function<void(const T&)> func) const
+	template<typename T, typename Key>
+	void AVLTree<T, Key>::Node::forEach(std::function<void(const T&)> func) const
 	{
 		if (left)
 			left->forEach(func);
@@ -606,15 +620,15 @@ namespace lists
 			right->forEach(func);
 	}
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	void AVLTree<T, Key, GetKeyFunc>::forEach(std::function<void(const T&)> func) const
+	template<typename T, typename Key>
+	void AVLTree<T, Key>::forEach(std::function<void(const T&)> func) const
 	{
 		if (root)
 			root->forEach(func);
 	}
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	bool AVLTree<T, Key, GetKeyFunc>::contains(const Key& key) const
+	template<typename T, typename Key>
+	bool AVLTree<T, Key>::contains(const Key& key) const
 	{
 		//        int searches = 0;
 		std::vector<T> result;
@@ -625,14 +639,14 @@ namespace lists
 		{
 			//            searches++;
 			Node* current_node = bfs_queue.front();
-			Key current_key = GetKeyFunc(current_node->value);
+			Key current_key = getKeyFunc(current_node->value);
 			bfs_queue.pop();
 			if (key == current_key)
 			{
 				//                std::cout << "(searches: " << searches << ")\n";
 				return true;
 			}
-			else if (key < current_key)
+			else if (comparatorFunc(key, current_key))
 			{
 				if (current_node->left)
 					bfs_queue.push(current_node->left);
@@ -643,8 +657,8 @@ namespace lists
 		return false;
 	}
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	std::vector<T> AVLTree<T, Key, GetKeyFunc>::find_all(const Key& min, const Key& max) const
+	template<typename T, typename Key>
+	std::vector<T> AVLTree<T, Key>::find_all(const Key& min, const Key& max) const
 	{
 		std::vector<T> result;
 		std::queue<Node*> bfs_queue;
@@ -654,13 +668,13 @@ namespace lists
 		{
 			Node* current_node = bfs_queue.front();
 			bfs_queue.pop();
-			if (GetKeyFunc(current_node->value) >= min && current_node->left)
+			if (!comparatorFunc(getKeyFunc(current_node->value), min) && current_node->left)
 				bfs_queue.push(current_node->left);
-			if (GetKeyFunc(current_node->value) <= max)
+			if (!comparatorFunc(max, getKeyFunc(current_node->value)))
 			{
 				if (current_node->right)
 					bfs_queue.push(current_node->right);
-				if (GetKeyFunc(current_node->value) >= min)
+				if (!comparatorFunc(getKeyFunc(current_node->value), min))
 					result.push_back(current_node->value);
 			}
 		}

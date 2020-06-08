@@ -8,12 +8,15 @@
 namespace lists
 {
 	template<typename T, typename Key>
-	using GetKeyFuncType = Key(*)(const T&);
+	using GetKeyFunc = std::function<Key(T)>;
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
+	template<typename Key>
+	using Comparator = std::function<bool(const Key&, const Key&)>;
+
+	template<typename T, typename Key>
 	struct SearchTree
 	{
-		SearchTree() {}
+		SearchTree(GetKeyFunc<T, Key> getKeyFunc, Comparator<Key> comparatorFunc) {}
 		virtual ~SearchTree() {}
 
 		virtual void add(const T& element) = 0;
@@ -32,10 +35,16 @@ namespace lists
 		{
 			return value;
 		}
+
+		template<typename T>
+		bool lessThan(const T& value1, const T& value2)
+		{
+			return value1 < value2;
+		}
 	}
 
 	template<typename T>
-	using SearchTreeSimple = SearchTree<T, T, detail::getValueAsKey<T>>;
+	using SearchTreeSimple = SearchTree<T, T>;
 }
 
 #endif // SORTEDLIST_H

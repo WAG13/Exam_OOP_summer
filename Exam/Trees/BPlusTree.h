@@ -21,16 +21,16 @@ namespace lists
 			//де вузол номер N містить значення між values[N-1] та values[N]
 
 			//пошук елемента
-			bool contains(const Key& key, GetKeyFuncType<T, Key> getKeyFunc) const;
+			bool contains(const Key& key, GetKeyFunc<T, Key> getKeyFunc, Comparator<Key> comparator) const;
 
 			//розбиття вузла
 			void splitChild(size_t index, size_t t);
 
 			//вставка елемента (передумова: values.size() < 2*t - 1)
-			void insertNonFull(const T& element, GetKeyFuncType<T, Key> getKeyFunc, size_t t);
+			void insertNonFull(const T& element, GetKeyFunc<T, Key> getKeyFunc, Comparator<Key> comparator, size_t t);
 
 			//видалення елемента (передумова: values.size() > t - 1, якщо це не корінь)
-			bool remove(const Key& key, GetKeyFuncType<T, Key> getKeyFunc, size_t t);
+			bool remove(const Key& key, GetKeyFunc<T, Key> getKeyFunc, Comparator<Key> comparator, size_t t);
 
 			//для деструктора дерева
 			void deleteChildren();
@@ -41,13 +41,13 @@ namespace lists
 
 		//Лінійний пошук серед ключів, якщо потрібно, спускаємось
 		template<typename T, typename Key>
-		bool BPlusNode<T, Key>::contains(const Key& key, GetKeyFuncType<T, Key> getKeyFunc) const
+		bool BPlusNode<T, Key>::contains(const Key& key, GetKeyFunc<T, Key> getKeyFunc, Comparator<Key> comparator) const
 		{
 			size_t i = 0;
 			//TODO: Можна замінити на binary search для більшої ефективності при великих values.size()
 			for (; i < values.size(); i++)
 			{
-				if (getKeyFunc(values[i]) >= key)
+				if (!comparator(getKeyFunc(values[i]), key))
 					break;
 			}
 			if (isLeaf && i < values.size() && getKeyFunc(values[i]) == key)
@@ -56,7 +56,7 @@ namespace lists
 			if (!isLeaf)
 			{
 				//DISK_READ
-				return children[i]->contains(key, getKeyFunc);
+				return children[i]->contains(key, getKeyFunc, comparator);
 			}
 			return false;
 		}
@@ -110,13 +110,13 @@ namespace lists
 		}
 
 		template<typename T, typename Key>
-		void BPlusNode<T, Key>::insertNonFull(const T& element, GetKeyFuncType<T, Key> getKeyFunc, size_t t)
+		void BPlusNode<T, Key>::insertNonFull(const T& element, GetKeyFunc<T, Key> getKeyFunc, Comparator<Key> comparator, size_t t)
 		{
 			if (isLeaf)
 			{
 				//проста вставка в лист
 
-				if (values.empty() || getKeyFunc(element) > getKeyFunc(values.back()))
+				if (values.empty() || comparator(getKeyFunc(values.back()), getKeyFunc(element)))
 				{
 					values.push_back(element);
 				}
@@ -126,7 +126,7 @@ namespace lists
 					size_t i = values.size() - 1;
 
 					values.push_back(values.back());
-					while (i > 0 && getKeyFunc(element) < getKeyFunc(values[i - 1]))
+					while (i > 0 && comparator(getKeyFunc(element), getKeyFunc(values[i - 1])))
 					{
 						values[i] = values[i - 1];
 						i--;
@@ -140,7 +140,7 @@ namespace lists
 				//Не лист, шукаємо піддерево для спуску
 				size_t i = values.size();
 
-				while (i > 0 && getKeyFunc(element) < getKeyFunc(values[i - 1]))
+				while (i > 0 && comparator(getKeyFunc(element), getKeyFunc(values[i - 1])))
 					i--;
 
 				//DISK_READ(children[i])
@@ -150,15 +150,15 @@ namespace lists
 					splitChild(i, t);
 
 					//куди спускатися після поділу
-					if (element > values[i])
+					if (comparator(getKeyFunc(values[i]), getKeyFunc(element)))
 						i++;
 				}
-				children[i]->insertNonFull(element, getKeyFunc, t);
+				children[i]->insertNonFull(element, getKeyFunc, comparator, t);
 			}
 		}
 
 		template<typename T, typename Key>
-		bool BPlusNode<T, Key>::remove(const Key& key, GetKeyFuncType<T, Key> getKeyFunc, size_t t)
+		bool BPlusNode<T, Key>::remove(const Key& key, GetKeyFunc<T, Key> getKeyFunc, Comparator<Key> lessThan, size_t t)
 		{
 			//передумова: values.size() > t - 1, якщо це не корінь
 			if (isLeaf)
@@ -180,14 +180,14 @@ namespace lists
 			//якщо це внутрішній вузол:
 			//знаходимо піддерево, яке може містити element
 			size_t i = 0;
-			while (i < values.size() && key > getKeyFunc(values[i]))
+			while (i < values.size() && lessThan(getKeyFunc(values[i]), key))
 				i++;
 
 			BPlusNode<T, Key>* node = children[i];
 			if (node->values.size() > t - 1)
 			{
 				//умова виконується
-				return node->remove(key, getKeyFunc, t);
+				return node->remove(key, getKeyFunc, lessThan, t);
 			}
 			else
 			{
@@ -225,7 +225,7 @@ namespace lists
 					}
 
 					//тепер умова виконується
-					return node->remove(key, getKeyFunc, t);
+					return node->remove(key, getKeyFunc, lessThan, t);
 				}
 				//аналогічно справа
 				if (i < children.size() - 1 && children[i + 1]->values.size() > t - 1)
@@ -258,7 +258,7 @@ namespace lists
 					}
 
 					//тепер умова виконується
-					return node->remove(key, getKeyFunc, t);
+					return node->remove(key, getKeyFunc, lessThan, t);
 				}
 				//У обох сусідів по (t-1) ключу, об`єднаємо
 				if (i < children.size() - 1)
@@ -297,7 +297,7 @@ namespace lists
 					children.erase(children.begin() + i + 1);
 
 					//тепер умова виконується
-					return node->remove(key, getKeyFunc, t);
+					return node->remove(key, getKeyFunc, lessThan, t);
 				}
 				if (i > 0)
 				{
@@ -334,7 +334,7 @@ namespace lists
 					children.erase(children.begin() + i);
 
 					//тепер умова виконується
-					return leftBro->remove(key, getKeyFunc, t);
+					return leftBro->remove(key, getKeyFunc, lessThan, t);
 				}
 			}
 		}
@@ -375,10 +375,11 @@ namespace lists
 
 
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	class BPlusTree : public SearchTree<T, Key, GetKeyFunc>
+	template<typename T, typename Key>
+	class BPlusTree : public SearchTree<T, Key>
 	{
 	public:
+		BPlusTree(GetKeyFunc<T, Key> getKey, Comparator<Key> lessThan, size_t t);
 		BPlusTree(size_t t);
 		virtual ~BPlusTree();
 
@@ -390,28 +391,39 @@ namespace lists
 		void forEach(std::function<void(const T&)> func) const override;
 	private:
 		size_t t;
+		GetKeyFunc<T, Key> getKey;
+		Comparator<Key> lessThan;
 		detail::BPlusNode<T, Key>* root;
 
 		friend detail::BPlusNode<T, Key>;
 	};
 
 	template<typename T>
-	using BPlusTreeSimple = BPlusTree<T, T, detail::getValueAsKey<T>>;
+	class BPlusTreeSimple : public BPlusTree<T, T>
+	{
+	public:
+		BPlusTreeSimple(size_t t)
+			: BPlusTree(detail::getValueAsKey<T>, detail::lessThan<T>, t)
+		{}
+	};
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	BPlusTree<T, Key, GetKeyFunc>::BPlusTree(size_t t)
-		: t(t), root(new detail::BPlusNode<T, Key>())
+	template<typename T, typename Key>
+	BPlusTree<T, Key>::BPlusTree(GetKeyFunc<T, Key> getKey, Comparator<Key> lessThan, size_t t)
+		: SearchTree(getKey, lessThan), t(t)
+		, root(new detail::BPlusNode<T, Key>())
+		, getKey(getKey)
+		, lessThan(lessThan)
 	{}
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	BPlusTree<T, Key, GetKeyFunc>::~BPlusTree()
+	template<typename T, typename Key>
+	BPlusTree<T, Key>::~BPlusTree()
 	{
 		root->deleteChildren();
 		delete root;
 	}
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	void BPlusTree<T, Key, GetKeyFunc>::add(const T& element)
+	template<typename T, typename Key>
+	void BPlusTree<T, Key>::add(const T& element)
 	{
 		detail::BPlusNode<T, Key>* currentRoot = root;
 
@@ -423,18 +435,18 @@ namespace lists
 			root->isLeaf = false;
 			root->children.push_back(currentRoot);
 			root->splitChild(0, t);
-			root->insertNonFull(element, GetKeyFunc, t);
+			root->insertNonFull(element, getKey, lessThan, t);
 		}
 		else
 		{
-			currentRoot->insertNonFull(element, GetKeyFunc, t);
+			currentRoot->insertNonFull(element, getKey, lessThan, t);
 		}
 	}
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	bool BPlusTree<T, Key, GetKeyFunc>::remove(const Key& key)
+	template<typename T, typename Key>
+	bool BPlusTree<T, Key>::remove(const Key& key)
 	{
-		bool result = root->remove(key, GetKeyFunc, t);
+		bool result = root->remove(key, getKey, lessThan, t);
 		//Зменшення висоти дерева
 		if (root->children.size() == 1)
 		{
@@ -446,20 +458,20 @@ namespace lists
 	}
 
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	void BPlusTree<T, Key, GetKeyFunc>::printStructure(std::ostream& os) const
+	template<typename T, typename Key>
+	void BPlusTree<T, Key>::printStructure(std::ostream& os) const
 	{
 		root->printStructure(os, 0);
 	}
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	bool BPlusTree<T, Key, GetKeyFunc>::contains(const Key& key) const
+	template<typename T, typename Key>
+	bool BPlusTree<T, Key>::contains(const Key& key) const
 	{
-		return root->contains(key, GetKeyFunc);
+		return root->contains(key, getKey, lessThan);
 	}
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	void BPlusTree<T, Key, GetKeyFunc>::printAll(std::ostream& os) const
+	template<typename T, typename Key>
+	void BPlusTree<T, Key>::printAll(std::ostream& os) const
 	{
 		//Вивід на екран за допомогою next
 
@@ -485,8 +497,8 @@ namespace lists
 		os << " ]";
 	}
 
-	template<typename T, typename Key, GetKeyFuncType<T, Key> GetKeyFunc>
-	void BPlusTree<T, Key, GetKeyFunc>::forEach(std::function<void(const T&)> func) const
+	template<typename T, typename Key>
+	void BPlusTree<T, Key>::forEach(std::function<void(const T&)> func) const
 	{
 		detail::BPlusNode<T, Key>* node = root;
 		while (!node->children.empty())
