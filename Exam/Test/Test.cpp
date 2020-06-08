@@ -6,7 +6,7 @@
 #include "../HashTables/BucketHashTable.h"
 #include "../Trees/AVLTree.h"
 #include "../Trees/BPlusTree.h"
-//#include "../Maps/TreeMap.h"
+#include "../Maps/TreeMap.h"
 #include <memory>
 #include <vector>
 
@@ -132,36 +132,38 @@ TEST_CASE("Sorting")
     }
 }
 
-TEST_CASE("Key-value")
+template<typename ValueT, typename KeyT>
+void testMap(Map<ValueT, KeyT>* map)
 {
+	map->set(5, "Five");
+	REQUIRE(map->get(5) == "Five");
 
-    SUBCASE("get Value by Key")
-    {
-    }
+	map->set(5, "New Five");
+	REQUIRE(map->get(5) == "New Five");
 
-    SUBCASE("change Value by Key")
-    {
-    }
+	map->set(4, "Four");
+	REQUIRE(map->contains(4));
+	REQUIRE(map->get(4) == "Four");
 
-    SUBCASE("add Value by Key")
-    {
-    }
+	map->remove(4);
+	REQUIRE(!map->contains(4));
+}
 
-    SUBCASE("delete Value by Key")
-    {
-    }
+TEST_CASE("Map")
+{
+	SUBCASE("AVL Tree Map")
+	{
+		std::unique_ptr<MapTreeType<std::string, int>> treeType(new MapTreeTypeAVL<std::string, int>());
+		std::unique_ptr<Map<std::string, int>> treeMap(new TreeMap(treeType.get()));
+		testMap(treeMap.get());
+	}
 
-    SUBCASE("get all Keys")
-    {
-    }
-
-    SUBCASE("get all Values")
-    {
-    }
-
-    SUBCASE("get all Key-value")
-    {
-    }
+	SUBCASE("B+ Tree Map")
+	{
+		std::unique_ptr<MapTreeType<std::string, int>> treeType(new MapTreeTypeBPlus<std::string, int>(2));
+		std::unique_ptr<Map<std::string, int>> treeMap(new TreeMap(treeType.get()));
+		testMap(treeMap.get());
+	}
 }
 
 TEST_CASE("Set")

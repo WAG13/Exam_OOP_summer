@@ -20,7 +20,7 @@ namespace lists
 		virtual ~SearchTree() {}
 
 		virtual void add(const T& element) = 0;
-		virtual void printAll(std::ostream& os) const = 0;
+		//virtual void printAll(std::ostream& os) const = 0;
 		virtual bool remove(const Key& key) = 0;
 		virtual bool contains(const Key& key) = 0;
 		virtual T& get(const Key& key) = 0;

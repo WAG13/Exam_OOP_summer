@@ -26,14 +26,14 @@ namespace lists
 		virtual ~AVLTree() override;
 
 		void add(const T& element) override;
-		void printAll(std::ostream& os) const override;
+		//void printAll(std::ostream& os) const override;
 		bool remove(const Key& key) override;
 		T& get(const Key& key) override;
 		bool contains(const Key& key) override;
 		std::vector<T> find_all(const Key& min, const Key& max) const /*override*/;
 		void forEach(std::function<void(const T&)> func) const override;
 
-		void print_as_tree(std::ostream& os) const;
+		//void print_as_tree(std::ostream& os) const;
 
 	private:
 		static const signed char LEFT_HEAVY = -1;
@@ -53,8 +53,8 @@ namespace lists
 				: value(value)
 			{}
 
-			void print(std::ostream& os, bool& first_element) const;
-			void print_as_tree(std::ostream& os, int levels) const;
+			//void print(std::ostream& os, bool& first_element) const;
+			//void print_as_tree(std::ostream& os, int levels) const;
 			void forEach(std::function<void(const T&)> func) const;
 		};
 
@@ -548,7 +548,7 @@ namespace lists
 	}
 
 
-	template<typename T, typename Key>
+	/*template<typename T, typename Key>
 	void AVLTree<T, Key>::Node::print(std::ostream& os, bool& first_element) const
 	{
 		if (left)
@@ -562,24 +562,24 @@ namespace lists
 
 		if (right)
 			right->print(os, first_element);
-	}
+	}*/
 
-	template<typename T, typename Key>
-	void AVLTree<T, Key>::printAll(std::ostream& os) const
-	{
-		os << "[ ";
-		if (root)
-		{
-			bool first_element = true;
-			root->print(os, first_element);
-		}
-		os << " ]" << std::endl;
-		//        #if DEBUG
-		print_as_tree(os);
-		//        #endif // DEBUG
-	}
+	//template<typename T, typename Key>
+	//void AVLTree<T, Key>::printAll(std::ostream& os) const
+	//{
+	//	os << "[ ";
+	//	if (root)
+	//	{
+	//		bool first_element = true;
+	//		root->print(os, first_element);
+	//	}
+	//	os << " ]" << std::endl;
+	//	//        #if DEBUG
+	//	print_as_tree(os);
+	//	//        #endif // DEBUG
+	//}
 
-	template<typename T, typename Key>
+	/*template<typename T, typename Key>
 	void AVLTree<T, Key>::Node::print_as_tree(std::ostream& os, int levels) const
 	{
 		for (int i = 0; i < levels; i++)
@@ -600,9 +600,9 @@ namespace lists
 			os << "Right:\n";
 			right->print_as_tree(os, levels + 1);
 		}
-	}
+	}*/
 
-	template<typename T, typename Key>
+	/*template<typename T, typename Key>
 	void AVLTree<T, Key>::print_as_tree(std::ostream& os) const
 	{
 		std::queue<Node*> queue;
@@ -610,7 +610,7 @@ namespace lists
 			root->print_as_tree(os, 0);
 		else
 			os << "Empty tree!\n";
-	}
+	}*/
 
 	template<typename T, typename Key>
 	void AVLTree<T, Key>::Node::forEach(std::function<void(const T&)> func) const

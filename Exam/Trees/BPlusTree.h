@@ -36,8 +36,8 @@ namespace lists
 			//для деструктора дерева
 			void deleteChildren();
 
-			//вивід на екран
-			void printStructure(std::ostream& os, int depth) const;
+			////вивід на екран
+			//void printStructure(std::ostream& os, int depth) const;
 		};
 
 		//Лінійний пошук серед ключів, якщо потрібно, спускаємось
@@ -353,23 +353,23 @@ namespace lists
 			}
 		}
 
-		template<typename T, typename Key>
-		void BPlusNode<T, Key>::printStructure(std::ostream& os, int depth) const
-		{
-			//    for(int i = 0; i < depth; i++)
-			//        os << "   ";
-			//    os << "leaf? " << isLeaf << " children: " << children.size() << " values: " << values.size() << '\n';
-			for (size_t i = 0; i < values.size(); i++)
-			{
-				if (!isLeaf)
-					children[i]->printStructure(os, depth + 1);
-				for (int i = 0; i < depth; i++)
-					os << "   ";
-				os << values[i] << std::endl;
-			}
-			if (!children.empty())
-				children.back()->printStructure(os, depth + 1);
-		}
+		//template<typename T, typename Key>
+		//void BPlusNode<T, Key>::printStructure(std::ostream& os, int depth) const
+		//{
+		//	//    for(int i = 0; i < depth; i++)
+		//	//        os << "   ";
+		//	//    os << "leaf? " << isLeaf << " children: " << children.size() << " values: " << values.size() << '\n';
+		//	for (size_t i = 0; i < values.size(); i++)
+		//	{
+		//		if (!isLeaf)
+		//			children[i]->printStructure(os, depth + 1);
+		//		for (int i = 0; i < depth; i++)
+		//			os << "   ";
+		//		os << values[i] << std::endl;
+		//	}
+		//	if (!children.empty())
+		//		children.back()->printStructure(os, depth + 1);
+		//}
 	}
 
 
@@ -385,8 +385,8 @@ namespace lists
 		virtual ~BPlusTree();
 
 		void add(const T& element) override;
-		void printStructure(std::ostream& os) const;
-		void printAll(std::ostream& os) const override;
+		/*void printStructure(std::ostream& os) const;
+		void printAll(std::ostream& os) const override;*/
 		T& get(const Key& key) override;
 		bool contains(const Key& key) override;
 		bool remove(const Key& key) override;
@@ -460,11 +460,11 @@ namespace lists
 	}
 
 
-	template<typename T, typename Key>
+	/*template<typename T, typename Key>
 	void BPlusTree<T, Key>::printStructure(std::ostream& os) const
 	{
 		root->printStructure(os, 0);
-	}
+	}*/
 
 	template<typename T, typename Key>
 	T& BPlusTree<T, Key>::get(const Key& key)
@@ -472,32 +472,32 @@ namespace lists
 		return root->get(key, getKey, lessThan);
 	}
 
-	template<typename T, typename Key>
-	void BPlusTree<T, Key>::printAll(std::ostream& os) const
-	{
-		//Вивід на екран за допомогою next
+	//template<typename T, typename Key>
+	//void BPlusTree<T, Key>::printAll(std::ostream& os) const
+	//{
+	//	//Вивід на екран за допомогою next
 
-		//Знаходимо мінімальний лист
-		detail::BPlusNode<T, Key>* node = root;
-		while (!node->children.empty())
-			node = node->children[0];
+	//	//Знаходимо мінімальний лист
+	//	detail::BPlusNode<T, Key>* node = root;
+	//	while (!node->children.empty())
+	//		node = node->children[0];
 
-		//Вивід на екран
-		bool first = true;
-		os << "[ ";
-		while (node)
-		{
-			for (size_t i = 0; i < node->values.size(); i++)
-			{
-				if (!first)
-					os << ", ";
-				os << node->values[i];
-				first = false;
-			}
-			node = node->next;
-		}
-		os << " ]";
-	}
+	//	//Вивід на екран
+	//	bool first = true;
+	//	os << "[ ";
+	//	while (node)
+	//	{
+	//		for (size_t i = 0; i < node->values.size(); i++)
+	//		{
+	//			if (!first)
+	//				os << ", ";
+	//			os << node->values[i];
+	//			first = false;
+	//		}
+	//		node = node->next;
+	//	}
+	//	os << " ]";
+	//}
 
 	template<typename T, typename Key>
 	void BPlusTree<T, Key>::forEach(std::function<void(const T&)> func) const
@@ -528,6 +528,7 @@ namespace lists
 		}
 	}
 
-#endif // BPLUSTREE_HPP
-
 }
+
+
+#endif // BPLUSTREE_HPP

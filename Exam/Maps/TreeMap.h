@@ -4,11 +4,10 @@
 #include <vector>
 #include <utility>
 
+#include "Map.h"
 #include "../Trees/SearchTree.h"
 #include "../Trees/AVLTree.h"
 #include "../Trees/BPlusTree.h"
-
-using namespace lists;
 
 //Strategy pattern
 
@@ -16,60 +15,58 @@ template<typename ValueT, typename KeyT>
 class TreeType
 {
 public:
-	virtual SearchTree<ValueT, KeyT>* createEmptyTree(GetKeyFunc<ValueT, KeyT> getKey, Comparator<KeyT> lessThan) = 0;
-};
-
-
-
-template<typename ValueT, typename KeyT>
-class TreeTypeAVL : public TreeType
-{
-public:
-	SearchTree<ValueT, KeyT>* createEmptyTree(GetKeyFunc<ValueT, KeyT> getKey, Comparator<KeyT> lessThan) override;
+	virtual lists::SearchTree<ValueT, KeyT>* createEmptyTree(lists::GetKeyFunc<ValueT, KeyT> getKey, lists::Comparator<KeyT> lessThan) = 0;
 };
 
 template<typename ValueT, typename KeyT>
-SearchTree<ValueT, KeyT>* TreeTypeAVL<ValueT, KeyT>::createEmptyTree(GetKeyFunc<ValueT, KeyT> getKey, Comparator<KeyT> lessThan)
-{
-	return new AVLTree(getKey, lessThan);
-}
+using MapTreeType = TreeType<std::pair<KeyT, ValueT>, KeyT>;
 
 
 
 template<typename ValueT, typename KeyT>
-class TreeTypeBPlus : public TreeType
+class TreeTypeAVL : public TreeType<ValueT, KeyT>
 {
 public:
-	TreeTypeBPlus(size_t t);
-	SearchTree<ValueT, KeyT>* createEmptyTree(GetKeyFunc<ValueT, KeyT> getKey, Comparator<KeyT> lessThan) override;
+	lists::SearchTree<ValueT, KeyT>* createEmptyTree(lists::GetKeyFunc<ValueT, KeyT> getKey, lists::Comparator<KeyT> lessThan) override
+	{
+		return new lists::AVLTree(getKey, lessThan);
+	}
+};
+
+template<typename ValueT, typename KeyT>
+using MapTreeTypeAVL = TreeTypeAVL<std::pair<KeyT, ValueT>, KeyT>;
+
+
+
+template<typename ValueT, typename KeyT>
+class TreeTypeBPlus : public TreeType<ValueT, KeyT>
+{
+public:
+	TreeTypeBPlus(size_t t) : t(t)
+	{
+	}
+	lists::SearchTree<ValueT, KeyT>* createEmptyTree(lists::GetKeyFunc<ValueT, KeyT> getKey, lists::Comparator<KeyT> lessThan) override
+	{
+		return new lists::BPlusTree(getKey, lessThan, this->t);
+	}
 
 private:
 	size_t t;
 };
 
 template<typename ValueT, typename KeyT>
-TreeTypeBPlus<ValueT, KeyT>::TreeTypeBPlus(size_t t)
-	: t(t)
-{
-}
-
-template<typename ValueT, typename KeyT>
-SearchTree<ValueT, KeyT>* TreeTypeBPlus<ValueT, KeyT>::createEmptyTree(GetKeyFunc<ValueT, KeyT> getKey, Comparator<KeyT> lessThan)
-{
-	return new BPlusTree(getKey, lessThan, this->t);
-}
-
-
+using MapTreeTypeBPlus = TreeTypeBPlus<std::pair<KeyT, ValueT>, KeyT>;
 
 
 template<typename ValueT, typename KeyT>
-class TreeMap : Map<ValueT, KeyT>
+class TreeMap : public Map<ValueT, KeyT>
 {
 public:
-	TreeMap(TreeType<std::pair<KeyT, ValueT>, KeyT>* type, Comparator<KeyT> keyComparator);
-	TreeMap(TreeType<std::pair<KeyT, ValueT>, KeyT>* type);
+	TreeMap(MapTreeType<ValueT, KeyT>* type, lists::Comparator<KeyT> keyComparator);
+	TreeMap(MapTreeType<ValueT, KeyT>* type);
 
 	ValueT get(const KeyT& key) const override;
+	bool contains(const KeyT& key) const override;
 	///
 	/// @brief Adds new key-value pair OR modifies sets new value for already existing key.
 	///
@@ -77,29 +74,29 @@ public:
 
 	void remove(const KeyT& key) override;
 
-	std::vector<KeyT> getKeys() const override;
+	/*std::vector<KeyT> getKeys() const override;
 	std::vector<ValueT> getValues() const override;
-	std::vector<std::pair<ValueT, KeyT>> getKVPs() const override;
+	std::vector<std::pair<ValueT, KeyT>> getKVPs() const override;*/
 
 private:
-	SearchTree<std::pair<KeyT, ValueT>, KeyT>* tree;
+	lists::SearchTree<std::pair<KeyT, ValueT>, KeyT>* tree;
 
 	static KeyT getKey(const std::pair<KeyT, ValueT>& kvp);
-}
+};
 
 template<typename ValueT, typename KeyT>
-TreeMap<ValueT, KeyT>::TreeMap(TreeType<std::pair<KeyT, ValueT>, KeyT>* type, Comparator<KeyT> keyComparator)
+TreeMap<ValueT, KeyT>::TreeMap(MapTreeType<ValueT, KeyT>* type, lists::Comparator<KeyT> keyComparator)
 {
-	tree = type->createEmptyTree(TreeMap<ValueT, KeyT>::getKey, comparator);
+	tree = type->createEmptyTree(TreeMap<ValueT, KeyT>::getKey, keyComparator);
 }
 
 template<typename ValueT, typename KeyT>
-TreeMap<ValueT, KeyT>::TreeMap(TreeType<std::pair<KeyT, ValueT>, KeyT>* type)
-	: TreeMap(type, details::lessThan<KeyT>)
+TreeMap<ValueT, KeyT>::TreeMap(MapTreeType<ValueT, KeyT>* type)
+	: TreeMap(type, lists::detail::lessThan<KeyT>)
 {}
 
 template<typename ValueT, typename KeyT>
-TreeMap<ValueT, KeyT>::getKey(const std::pair<KeyT, ValueT>& kvp)
+KeyT TreeMap<ValueT, KeyT>::getKey(const std::pair<KeyT, ValueT>& kvp)
 {
 	return kvp.first;
 }
@@ -109,12 +106,23 @@ TreeMap<ValueT, KeyT>::getKey(const std::pair<KeyT, ValueT>& kvp)
 template<typename ValueT, typename KeyT>
 ValueT TreeMap<ValueT, KeyT>::get(const KeyT& key) const
 {
-	return tree->get(key);
+	return tree->get(key).second;
+}
+
+template<typename ValueT, typename KeyT>
+bool TreeMap<ValueT, KeyT>::contains(const KeyT& key) const
+{
+	return tree->contains(key);
 }
 
 template<typename ValueT, typename KeyT>
 void TreeMap<ValueT, KeyT>::set(const KeyT& key, ValueT value)
 {
+	if (!tree->contains(key)) {
+		tree->add(std::pair<KeyT, ValueT>(key, value));
+		return;
+	}
+	
 	std::pair<KeyT, ValueT>& kvp = tree->get(key);
 	kvp.second = value;
 }
