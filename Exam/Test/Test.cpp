@@ -185,6 +185,8 @@ void testMap(Map<ValueT, KeyT>* map)
 	REQUIRE(!map->contains(4));
 
 	REQUIRE(map->getValues().size() == 1);
+
+	
 }
 
 TEST_CASE("Map")
@@ -238,5 +240,52 @@ TEST_CASE("Set")
 		std::unique_ptr<SetTreeType<int>> treeType(new SetTreeTypeBPlus<int>(2));
 		std::unique_ptr<Set<int>> treeSet(new TreeSet(treeType.get()));
 		testSet(treeSet.get());
+	}
+
+	SUBCASE("Set Operations")
+	{
+		std::unique_ptr<SetTreeType<int>> treeType(new SetTreeTypeBPlus<int>(2));
+		std::unique_ptr<Set<int>> treeSet1(new TreeSet(treeType.get()));
+		treeSet1->insert(1);
+		treeSet1->insert(2);
+		treeSet1->insert(3);
+		treeSet1->insert(4);
+		std::unique_ptr<Set<int>> treeSet2(new TreeSet(treeType.get()));
+		treeSet2->insert(3);
+		treeSet2->insert(4);
+		treeSet2->insert(5);
+		treeSet2->insert(6);
+
+		std::unique_ptr<Set<int>> treeSetUnion(new TreeSet(treeType.get()));
+		treeSetUnion->insertUnion(treeSet1.get(), treeSet2.get());
+		for (int i = 1; i <= 6; i++)
+			REQUIRE(treeSetUnion->contains(i));
+
+		std::unique_ptr<Set<int>> treeSetIntersection(new TreeSet(treeType.get()));
+		treeSetIntersection->insertIntersection(treeSet1.get(), treeSet2.get());
+		REQUIRE(!treeSetIntersection->contains(1));
+		REQUIRE(!treeSetIntersection->contains(2));
+		REQUIRE(treeSetIntersection->contains(3));
+		REQUIRE(treeSetIntersection->contains(4));
+		REQUIRE(!treeSetIntersection->contains(5));
+		REQUIRE(!treeSetIntersection->contains(6));
+
+		std::unique_ptr<Set<int>> treeSetComplement(new TreeSet(treeType.get()));
+		treeSetComplement->insertComplement(treeSet1.get(), treeSet2.get());
+		REQUIRE(treeSetComplement->contains(1));
+		REQUIRE(treeSetComplement->contains(2));
+		REQUIRE(!treeSetComplement->contains(3));
+		REQUIRE(!treeSetComplement->contains(4));
+		REQUIRE(!treeSetComplement->contains(5));
+		REQUIRE(!treeSetComplement->contains(6));
+
+		std::unique_ptr<Set<int>> treeSetSymmDiff(new TreeSet(treeType.get()));
+		treeSetSymmDiff->insertSymmetricDiff(treeSet1.get(), treeSet2.get());
+		REQUIRE(treeSetSymmDiff->contains(1));
+		REQUIRE(treeSetSymmDiff->contains(2));
+		REQUIRE(!treeSetSymmDiff->contains(3));
+		REQUIRE(!treeSetSymmDiff->contains(4));
+		REQUIRE(treeSetSymmDiff->contains(5));
+		REQUIRE(treeSetSymmDiff->contains(6));
 	}
 }
