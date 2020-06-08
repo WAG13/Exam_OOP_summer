@@ -19,13 +19,13 @@ public:
 	virtual void disableTwoChoiceHashing() = 0;
 	virtual void rehash(size_t add_count) = 0;
 
-	//class Iterator {
+	//class ForwardIterator {
 	//private:
 	//	const HashTable* table;
 	//	std::pair<KeyT, ValueT>* item;
 
 	//public:
-	//	Iterator(const HashTable* _table, std::pair<KeyT, ValueT>* _item) : table(_table), item(_item) {}
+	//	ForwardIterator(const HashTable* _table, std::pair<KeyT, ValueT>* _item) : table(_table), item(_item) {}
 
 	//	std::pair<KeyT, ValueT>& operator*() {
 	//		return *item;

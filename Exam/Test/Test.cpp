@@ -8,6 +8,7 @@
 #include "../Trees/BPlusTree.h"
 #include "../Maps/TreeMap.h"
 #include "../Sets/TreeSet.h"
+#include "../Iterator.h"
 #include <memory>
 #include <vector>
 
@@ -203,38 +204,39 @@ TEST_CASE("Map")
 	}
 }
 
-TEST_CASE("Set")
+
+template<typename T>
+void testSet(Set<T>* set)
 {
+	set->insert(5);
+	set->insert(10);
+	auto it = set->begin();
+	bool firstIsFive = (*it == 5);
+	//REQUIRE(firstIsFive || *it == 10);
+	it++;
+	//REQUIRE((firstIsFive && *it == 5) || (!firstIsFive && *it == 10));
+	it++;
+	REQUIRE(it.isEnd());
 
-    SUBCASE("find element")
-    {
-    }
-
-    SUBCASE("add element")
-    {
-    }
-
-    SUBCASE("delete element")
-    {
-    }
+	set->insert(16);
+	REQUIRE(set->contains(16));
+	set->remove(16);
+	REQUIRE(!set->contains(16));
 }
 
-TEST_CASE("Set operations")
+TEST_CASE("Set")
 {
+	SUBCASE("AVL Tree Set")
+	{
+		std::unique_ptr<SetTreeType<int>> treeType(new SetTreeTypeAVL<int>());
+		std::unique_ptr<Set<int>> treeSet(new TreeSet(treeType.get()));
+		testSet(treeSet.get());
+	}
 
-    SUBCASE("union")
-    {
-    }
-
-    SUBCASE("intersection")
-    {
-    }
-
-    SUBCASE("difference")
-    {
-    }
-
-    SUBCASE("symmetric_difference")
-    {
-    }
+	SUBCASE("B+ Tree Set")
+	{
+		std::unique_ptr<SetTreeType<int>> treeType(new SetTreeTypeBPlus<int>(2));
+		std::unique_ptr<Set<int>> treeSet(new TreeSet(treeType.get()));
+		testSet(treeSet.get());
+	}
 }

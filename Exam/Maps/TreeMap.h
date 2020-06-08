@@ -8,54 +8,23 @@
 #include "../Trees/SearchTree.h"
 #include "../Trees/AVLTree.h"
 #include "../Trees/BPlusTree.h"
+#include "../Trees/TreeTypes.h"
 
 //Strategy pattern
 
-template<typename ValueT, typename KeyT>
-class TreeType
-{
-public:
-	virtual lists::SearchTree<ValueT, KeyT>* createEmptyTree(lists::GetKeyFunc<ValueT, KeyT> getKey, lists::Comparator<KeyT> lessThan) = 0;
-};
 
 template<typename ValueT, typename KeyT>
 using MapTreeType = TreeType<std::pair<KeyT, ValueT>, KeyT>;
 
 
-
-template<typename ValueT, typename KeyT>
-class TreeTypeAVL : public TreeType<ValueT, KeyT>
-{
-public:
-	lists::SearchTree<ValueT, KeyT>* createEmptyTree(lists::GetKeyFunc<ValueT, KeyT> getKey, lists::Comparator<KeyT> lessThan) override
-	{
-		return new lists::AVLTree(getKey, lessThan);
-	}
-};
-
 template<typename ValueT, typename KeyT>
 using MapTreeTypeAVL = TreeTypeAVL<std::pair<KeyT, ValueT>, KeyT>;
 
 
-
-template<typename ValueT, typename KeyT>
-class TreeTypeBPlus : public TreeType<ValueT, KeyT>
-{
-public:
-	TreeTypeBPlus(size_t t) : t(t)
-	{
-	}
-	lists::SearchTree<ValueT, KeyT>* createEmptyTree(lists::GetKeyFunc<ValueT, KeyT> getKey, lists::Comparator<KeyT> lessThan) override
-	{
-		return new lists::BPlusTree(getKey, lessThan, this->t);
-	}
-
-private:
-	size_t t;
-};
-
 template<typename ValueT, typename KeyT>
 using MapTreeTypeBPlus = TreeTypeBPlus<std::pair<KeyT, ValueT>, KeyT>;
+
+
 
 
 template<typename ValueT, typename KeyT>
@@ -79,16 +48,15 @@ public:
 	std::vector<std::pair<KeyT, ValueT>> getKVPs() const override;
 
 private:
-	lists::SearchTree<std::pair<KeyT, ValueT>, KeyT>* tree;
+	std::unique_ptr<lists::SearchTree<std::pair<KeyT, ValueT>, KeyT>> tree;
 
 	static KeyT getKey(const std::pair<KeyT, ValueT>& kvp);
 };
 
 template<typename ValueT, typename KeyT>
 TreeMap<ValueT, KeyT>::TreeMap(MapTreeType<ValueT, KeyT>* type, lists::Comparator<KeyT> keyComparator)
-{
-	tree = type->createEmptyTree(TreeMap<ValueT, KeyT>::getKey, keyComparator);
-}
+	: tree(type->createEmptyTree(TreeMap<ValueT, KeyT>::getKey, keyComparator))
+{}
 
 template<typename ValueT, typename KeyT>
 TreeMap<ValueT, KeyT>::TreeMap(MapTreeType<ValueT, KeyT>* type)

@@ -5,22 +5,105 @@
 #include <vector>
 #include <utility>
 
+#include "../Trees/SearchTree.h"
+#include "../Trees/TreeTypes.h"
+#include "../Iterator.h"
+
+//Strategy pattern
+
+
+template<typename T>
+using SetTreeType = TreeType<T, T>;
+
+
+template<typename T>
+using SetTreeTypeAVL = TreeTypeAVL<T, T>;
+
+
+template<typename T>
+using SetTreeTypeBPlus = TreeTypeBPlus<T, T>;
+
+
+
+
 template<typename T>
 class TreeSet : public Set<T>
 {
 public:
+	TreeSet(SetTreeType<T>* type);
+
 	void insert(const T& element) override;
 	void remove(const T& element) override;
 	bool contains(const T& element) override;
 
-	Iterator begin() override;
+	ForwardIterator<T> begin() override;
 
 	//TODO: set operatrions (merge, diff, ...)
 
 private:
-	class TreeSetIteratorImpl : public IteratorImpl
-	{};
+	lists::SearchTreeSimple<T>* tree;
+
+	struct TreeSetIteratorImpl : public ForwardIteratorImpl<T>
+	{
+		//extremely hacky but quick implementation
+		std::vector<T> values;
+		size_t currentIndex = 0;
+		TreeSetIteratorImpl(lists::SearchTreeSimple<T>* tree)
+		{
+			tree->forEach([&](const T& value) {
+				values.push_back(value);
+			});
+		}
+
+		void increment() override
+		{
+			currentIndex++;
+		}
+
+		bool isEnd() override
+		{
+			return currentIndex >= values.size();
+		}
+
+		T& getRef() override
+		{
+			return values[currentIndex];
+		}
+		T* getPtr() override
+		{
+			return &values[currentIndex];
+		}
+	};
 };
 
+template<typename T>
+TreeSet<T>::TreeSet(SetTreeType<T>* type)
+{
+	tree = type->createEmptyTree(lists::detail::getValueAsKey<T>, lists::detail::lessThan<T>);
+}
+
+template<typename T>
+ForwardIterator<T> TreeSet<T>::begin()
+{
+	return ForwardIterator(new TreeSetIteratorImpl(this->tree));
+}
+
+template<typename T>
+void TreeSet<T>::insert(const T& element)
+{
+	tree->add(element);
+}
+
+template<typename T>
+void TreeSet<T>::remove(const T& element)
+{
+	tree->remove(element);
+}
+
+template<typename T>
+bool TreeSet<T>::contains(const T& element)
+{
+	return tree->contains(element);
+}
 
 #endif
