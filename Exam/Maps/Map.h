@@ -4,10 +4,11 @@
 #include <vector>
 #include <utility>
 
-template<typename ValueT, KeyT>
+template<typename ValueT, typename KeyT>
 class Map
 {
 public:
+	virtual ~Map() {};
 
 	virtual ValueT get(const KeyT& key) const = 0;
 	///

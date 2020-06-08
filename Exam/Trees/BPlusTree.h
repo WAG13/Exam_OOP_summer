@@ -4,6 +4,7 @@
 #include "SearchTree.h"
 #include <vector>
 #include <iostream>
+#include <exception>
 
 namespace lists
 {
@@ -21,7 +22,7 @@ namespace lists
 			//де вузол номер N містить значення між values[N-1] та values[N]
 
 			//пошук елемента
-			bool contains(const Key& key, GetKeyFunc<T, Key> getKeyFunc, Comparator<Key> comparator) const;
+			T& get(const Key& key, GetKeyFunc<T, Key> getKeyFunc, Comparator<Key> comparator);
 
 			//розбиття вузла
 			void splitChild(size_t index, size_t t);
@@ -41,7 +42,7 @@ namespace lists
 
 		//Лінійний пошук серед ключів, якщо потрібно, спускаємось
 		template<typename T, typename Key>
-		bool BPlusNode<T, Key>::contains(const Key& key, GetKeyFunc<T, Key> getKeyFunc, Comparator<Key> comparator) const
+		T& BPlusNode<T, Key>::get(const Key& key, GetKeyFunc<T, Key> getKeyFunc, Comparator<Key> comparator)
 		{
 			size_t i = 0;
 			//TODO: Можна замінити на binary search для більшої ефективності при великих values.size()
@@ -51,14 +52,14 @@ namespace lists
 					break;
 			}
 			if (isLeaf && i < values.size() && getKeyFunc(values[i]) == key)
-				return true;
+				return values[i];
 
 			if (!isLeaf)
 			{
 				//DISK_READ
-				return children[i]->contains(key, getKeyFunc, comparator);
+				return children[i]->get(key, getKeyFunc, comparator);
 			}
-			return false;
+			throw std::out_of_range("key not found");
 		}
 
 		template<typename T, typename Key>
@@ -386,7 +387,8 @@ namespace lists
 		void add(const T& element) override;
 		void printStructure(std::ostream& os) const;
 		void printAll(std::ostream& os) const override;
-		bool contains(const Key& key) const override;
+		T& get(const Key& key) override;
+		bool contains(const Key& key) override;
 		bool remove(const Key& key) override;
 		void forEach(std::function<void(const T&)> func) const override;
 	private:
@@ -465,9 +467,9 @@ namespace lists
 	}
 
 	template<typename T, typename Key>
-	bool BPlusTree<T, Key>::contains(const Key& key) const
+	T& BPlusTree<T, Key>::get(const Key& key)
 	{
-		return root->contains(key, getKey, lessThan);
+		return root->get(key, getKey, lessThan);
 	}
 
 	template<typename T, typename Key>
@@ -512,6 +514,19 @@ namespace lists
 		}
 	}
 
+	template<typename T, typename Key>
+	bool BPlusTree<T, Key>::contains(const Key& key)
+	{
+		try
+		{
+			get(key);
+			return true;
+		}
+		catch (std::out_of_range& e)
+		{
+			return false;
+		}
+	}
 
 #endif // BPLUSTREE_HPP
 

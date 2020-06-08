@@ -9,6 +9,7 @@
 #include <queue>
 #include <vector>
 #include <stack>
+#include <exception>
 
 namespace lists
 {
@@ -27,7 +28,8 @@ namespace lists
 		void add(const T& element) override;
 		void printAll(std::ostream& os) const override;
 		bool remove(const Key& key) override;
-		bool contains(const Key& key) const override;
+		T& get(const Key& key) override;
+		bool contains(const Key& key) override;
 		std::vector<T> find_all(const Key& min, const Key& max) const /*override*/;
 		void forEach(std::function<void(const T&)> func) const override;
 
@@ -628,7 +630,7 @@ namespace lists
 	}
 
 	template<typename T, typename Key>
-	bool AVLTree<T, Key>::contains(const Key& key) const
+	T& AVLTree<T, Key>::get(const Key& key)
 	{
 		//        int searches = 0;
 		std::vector<T> result;
@@ -644,7 +646,7 @@ namespace lists
 			if (key == current_key)
 			{
 				//                std::cout << "(searches: " << searches << ")\n";
-				return true;
+				return current_node->value;
 			}
 			else if (comparatorFunc(key, current_key))
 			{
@@ -654,7 +656,7 @@ namespace lists
 			else if (current_node->right)
 				bfs_queue.push(current_node->right);
 		}
-		return false;
+		throw std::out_of_range("key not found");
 	}
 
 	template<typename T, typename Key>
@@ -679,6 +681,21 @@ namespace lists
 			}
 		}
 		return result;
+	}
+
+
+	template<typename T, typename Key>
+	bool AVLTree<T, Key>::contains(const Key& key)
+	{
+		try
+		{
+			get(key);
+			return true;
+		}
+		catch (const std::out_of_range& e)
+		{
+			return false;
+		}
 	}
 }
 #endif // AVLTREE

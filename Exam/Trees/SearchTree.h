@@ -22,7 +22,8 @@ namespace lists
 		virtual void add(const T& element) = 0;
 		virtual void printAll(std::ostream& os) const = 0;
 		virtual bool remove(const Key& key) = 0;
-		virtual bool contains(const Key& key) const = 0;
+		virtual bool contains(const Key& key) = 0;
+		virtual T& get(const Key& key) = 0;
 		//virtual std::vector<T> find_all(const Key& min, const Key& max) const = 0;
 		virtual void forEach(std::function<void(const T&)> func) const = 0;
 	};
