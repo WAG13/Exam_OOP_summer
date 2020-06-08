@@ -3,10 +3,11 @@
 #include "doctest.h"
 #include"../Data/DateTime.h"
 #include"../Data/DataGenerator.h"
+#include "../HashTables/BucketHashTable.h"
 #include "../Trees/AVLTree.h"
 #include "../Trees/BPlusTree.h"
-#include <vector>
 #include <memory>
+#include <vector>
 
 TEST_CASE("Data")
 {
@@ -49,6 +50,10 @@ TEST_CASE("List")
 
 TEST_CASE("Hash")
 {
+    /*SUBCASE("Separate hashing") {
+        BucketHashTable<int, std::string, std::function<size_t(int)>, std::vector<std::pair<int, std::string>>> 
+            hash{ {1, "one"}, {2, "two"}, {3, "three"} };
+    }*/
 
     SUBCASE("Coalesced hashing")
     {
