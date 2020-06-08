@@ -51,7 +51,7 @@ TEST_CASE("List")
 TEST_CASE("Hash")
 {
     SUBCASE("Separate hashing") {
-        auto hash = new BucketHashTable<int, int, [](int const& v, size_t bucket_count) { return size_t(v) % bucket_count; }, std::vector<std::pair<int, int>>> {7};
+        auto hash = new BucketHashTable<int, int, std::vector<std::pair<int, int>>> { [](int const& v, size_t bucket_count) { return size_t(v) % bucket_count; }, 7 };
         REQUIRE(hash->buckets_count() == 7);
 
         hash->insert(2, 13);
