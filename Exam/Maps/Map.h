@@ -19,9 +19,9 @@ public:
 
 	virtual void remove(const KeyT& key) = 0;
 
-	/*virtual std::vector<KeyT> getKeys() const = 0;
+	virtual std::vector<KeyT> getKeys() const = 0;
 	virtual std::vector<ValueT> getValues() const = 0;
-	virtual std::vector<std::pair<KeyT, ValueT>> getKVPs() const = 0;*/
+	virtual std::vector<std::pair<KeyT, ValueT>> getKVPs() const = 0;
 };
 
 

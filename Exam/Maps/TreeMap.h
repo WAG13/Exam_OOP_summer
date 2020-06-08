@@ -74,9 +74,9 @@ public:
 
 	void remove(const KeyT& key) override;
 
-	/*std::vector<KeyT> getKeys() const override;
+	std::vector<KeyT> getKeys() const override;
 	std::vector<ValueT> getValues() const override;
-	std::vector<std::pair<ValueT, KeyT>> getKVPs() const override;*/
+	std::vector<std::pair<KeyT, ValueT>> getKVPs() const override;
 
 private:
 	lists::SearchTree<std::pair<KeyT, ValueT>, KeyT>* tree;
@@ -131,6 +131,36 @@ template<typename ValueT, typename KeyT>
 void TreeMap<ValueT, KeyT>::remove(const KeyT& key)
 {
 	tree->remove(key);
+}
+
+template<typename ValueT, typename KeyT>
+std::vector<KeyT> TreeMap<ValueT, KeyT>::getKeys() const
+{
+	std::vector<KeyT> keys;
+	tree->forEach([&keys](const std::pair<KeyT, ValueT>& kvp) {
+		keys.push_back(kvp.first);
+	});
+	return keys;
+}
+
+template<typename ValueT, typename KeyT>
+std::vector<ValueT> TreeMap<ValueT, KeyT>::getValues() const
+{
+	std::vector<ValueT> values;
+	tree->forEach([&values](const std::pair<KeyT, ValueT>& kvp) {
+		values.push_back(kvp.second);
+	});
+	return values;
+}
+
+template<typename ValueT, typename KeyT>
+std::vector<std::pair<KeyT, ValueT>> TreeMap<ValueT, KeyT>::getKVPs() const
+{
+	std::vector<std::pair<KeyT, ValueT>> kvps;
+	tree->forEach([&kvps](const std::pair<KeyT, ValueT>& kvp) {
+		kvps.push_back(kvp);
+	});
+	return kvps;
 }
 
 #endif
