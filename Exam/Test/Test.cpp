@@ -10,6 +10,7 @@
 #include "../Trees/AVLTree.h"
 #include "../Trees/BPlusTree.h"
 #include "../Maps/TreeMap.h"
+#include "../Maps/StandardMap.h"
 #include "../Sets/TreeSet.h"
 #include "../Iterator.h"
 #include <memory>
@@ -263,8 +264,6 @@ void testMap(Map<ValueT, KeyT>* map)
 	REQUIRE(!map->contains(4));
 
 	REQUIRE(map->getValues().size() == 1);
-
-	
 }
 
 TEST_CASE("Map")
@@ -280,6 +279,12 @@ TEST_CASE("Map")
 	{
 		std::unique_ptr<MapTreeType<std::string, int>> treeType(new MapTreeTypeBPlus<std::string, int>(2));
 		std::unique_ptr<Map<std::string, int>> treeMap(new TreeMap(treeType.get()));
+		testMap(treeMap.get());
+	}
+
+	SUBCASE("std::map")
+	{
+		std::unique_ptr<Map<std::string, int>> treeMap(new StandardMap<std::string, int>());
 		testMap(treeMap.get());
 	}
 }

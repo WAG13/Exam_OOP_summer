@@ -10,8 +10,9 @@
 #include "../Trees/BPlusTree.h"
 #include "../Trees/TreeTypes.h"
 
+//////////////////////////
 //Strategy pattern
-
+//////////////////////////
 
 template<typename ValueT, typename KeyT>
 using MapTreeType = TreeType<std::pair<KeyT, ValueT>, KeyT>;
