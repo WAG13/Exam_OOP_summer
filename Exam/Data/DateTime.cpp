@@ -1,8 +1,7 @@
 #include "DateTime.h"
 #include<iostream>
 
-DateTime::DateTime() :year(1800), month(1), day(1), hour(0), min(0), sec(0)
-{}
+DateTime::DateTime() :year(1800), month(1), day(1), hour(0), min(0), sec(0) {}
 
 DateTime::DateTime( unsigned int _year, unsigned int _month, unsigned int _day,
                     unsigned int _hour, unsigned int _min, unsigned int _sec)

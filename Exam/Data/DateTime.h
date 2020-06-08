@@ -14,6 +14,7 @@ public:
     ~DateTime() {};
 
     // Getters
+    //long long getKey()        const;
     std::string getDate()     const;
     std::string getTime()     const;
     std::string getDateTime() const;

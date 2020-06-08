@@ -1,8 +1,11 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include "doctest.h"
-#include"../Data/DateTime.h"
-#include"../Data/DataGenerator.h"
+#include "../Data/DateTime.h"
+#include "../Data/DataGenerator.h"
+#include "../Lists/DoublyCircularLinkedList.h"
+#include "../Lists/DoublyLinkedList.h"
+#include "../Lists/LinkedList.h"
 #include "../HashTables/BucketHashTable.h"
 #include "../Trees/AVLTree.h"
 #include "../Trees/BPlusTree.h"
@@ -22,7 +25,7 @@ TEST_CASE("Data")
         REQUIRE(date2.getDateTime() == "18.02.2016 13:05:08");
         DateTime date3(2015, 12, 31, 25, 65, 8);
         REQUIRE(date3.getDateTime() == "01.01.2016 02:05:08");
-        
+
     }
     SUBCASE("Creating random data")
     {
@@ -31,8 +34,8 @@ TEST_CASE("Data")
         DateTime max_date(2500, 1, 1, 0, 0, 0);
         REQUIRE(max_date.getDateTime() == "01.01.2500 00:00:00");
         DataGenerator<DateTime>* dataGen = new RandomDataGenerator<DateTime>();
-        vector<DateTime> random = dataGen->generateVector(min_date, max_date, 15);
-        REQUIRE(random.size() == 15);
+        vector<DateTime> random = dataGen->generateVector(min_date, max_date, 150);
+        REQUIRE(random.size() == 150);
         for (auto& r : random) {
             REQUIRE(r <= max_date);
             REQUIRE(r >= min_date);
@@ -40,14 +43,89 @@ TEST_CASE("Data")
     }
 }
 
+int foo(int element_value) { return (element_value + 10); };
+
 TEST_CASE("List")
 {
-    SUBCASE("Creating DList")
+
+
+    SUBCASE("Creating Linked List")
     {
+        int size = 150;
+        LinkedList<int, int> linked_list(&foo);
+        for (int i = 0; i < size; i++)
+            linked_list.insertNewNode(i);
+
+        auto vector_linked_list = linked_list.toVector();
+        for (int i = 0; i < size; i++) {
+            REQUIRE(vector_linked_list[i].first == i);
+            REQUIRE(vector_linked_list[i].first + 10 == vector_linked_list[i].second);
+        }
+
+        REQUIRE(linked_list.searchByKey(5));
+        linked_list.deleteByKey(5);
+        REQUIRE(!linked_list.searchByKey(5));
+        linked_list.deleteByKey(-5);
+        REQUIRE(!linked_list.searchByKey(-5));
+
+        REQUIRE(linked_list.searchByValue(15));
+        linked_list.deleteByValue(15);
+        REQUIRE(!linked_list.searchByValue(15));
+        linked_list.deleteByValue(-15);
+        REQUIRE(!linked_list.searchByValue(-15));
+
     }
 
-    SUBCASE("Creating СDList")
+    SUBCASE("Creating Doubly Linked List")
     {
+        int size = 150;
+        DoublyLinkedList<int, int> linked_list(&foo);
+        for (int i = 0; i < size; i++)
+            linked_list.insertNewNode(i);
+
+        auto vector_linked_list = linked_list.toVector();
+        for (int i = 0; i < size; i++) {
+            REQUIRE(vector_linked_list[i].first == i);
+            REQUIRE(vector_linked_list[i].first + 10 == vector_linked_list[i].second);
+        }
+
+        REQUIRE(linked_list.searchByKey(5));
+        linked_list.deleteByKey(5);
+        REQUIRE(!linked_list.searchByKey(5));
+        linked_list.deleteByKey(-5);
+        REQUIRE(!linked_list.searchByKey(-5));
+
+        REQUIRE(linked_list.searchByValue(15));
+        linked_list.deleteByValue(15);
+        REQUIRE(!linked_list.searchByValue(15));
+        linked_list.deleteByValue(-15);
+        REQUIRE(!linked_list.searchByValue(-15));
+    }
+
+    SUBCASE("Creating Doubly Circular Linked List")
+    {
+        int size = 150;
+        DoublyCircularLinkedList<int, int> linked_list(&foo);
+        for (int i = 0; i < size; i++)
+            linked_list.insertNewNode(i);
+
+        auto vector_linked_list = linked_list.toVector();
+        for (int i = 0; i < size; i++) {
+            REQUIRE(vector_linked_list[i].first == i);
+            REQUIRE(vector_linked_list[i].first + 10 == vector_linked_list[i].second);
+        }
+
+        REQUIRE(linked_list.searchByKey(5));
+        linked_list.deleteByKey(5);
+        REQUIRE(!linked_list.searchByKey(5));
+        linked_list.deleteByKey(-5);
+        REQUIRE(!linked_list.searchByKey(-5));
+
+        REQUIRE(linked_list.searchByValue(15));
+        linked_list.deleteByValue(15);
+        REQUIRE(!linked_list.searchByValue(15));
+        linked_list.deleteByValue(-15);
+        REQUIRE(!linked_list.searchByValue(-15));
     }
 }
 
