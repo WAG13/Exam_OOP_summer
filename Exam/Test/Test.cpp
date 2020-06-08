@@ -50,10 +50,42 @@ TEST_CASE("List")
 
 TEST_CASE("Hash")
 {
-    /*SUBCASE("Separate hashing") {
-        BucketHashTable<int, std::string, std::function<size_t(int)>, std::vector<std::pair<int, std::string>>> 
-            hash{ {1, "one"}, {2, "two"}, {3, "three"} };
-    }*/
+    SUBCASE("Separate hashing") {
+        auto hash = new BucketHashTable<int, int, [](int const& v, size_t bucket_count) { return size_t(v) % bucket_count; }, std::vector<std::pair<int, int>>> {7};
+        REQUIRE(hash->buckets_count() == 7);
+
+        hash->insert(2, 13);
+        hash->insert(2, 15);
+        hash->insert(1, 2);
+        hash->insert(14, 5);
+        REQUIRE(hash->find(14) == std::vector{ 5 });
+        REQUIRE(hash->find(1) == std::vector{ 2 });
+        REQUIRE(hash->find(2) == std::vector{13, 15});
+        REQUIRE(hash->find(3) == std::vector<int>{});
+        REQUIRE(hash->find(6) == std::vector<int>{});
+
+        hash->remove(2, 13);
+        REQUIRE(hash->find(2) == std::vector{ 15 });
+        hash->remove(2);
+        REQUIRE(hash->find(2) == std::vector<int>{});
+        REQUIRE(hash->size() == 2);
+
+        hash->enableTwoChoiceHashing([](int const& v, size_t bucket_count) { return (size_t(v) * size_t(v)) % bucket_count; });
+        hash->insert(2, 8);
+        hash->insert(2, 9);
+        hash->insert(2, 10);
+        //first algorithm searches in the 2-nd bucket, then in the 4-th bucket
+        REQUIRE(hash->find(2) == std::vector{ 8, 10, 9 });
+
+        REQUIRE(hash->getAllItems() == std::vector<std::pair<int, int>>{ { 14, 5 }, { 1, 2 }, { 2, 8 }, { 2, 10 }, { 2, 9 } });
+        //implicitly rehashes hash table
+        hash->disableTwoChoiceHashing();
+        REQUIRE(hash->getAllItems() == std::vector<std::pair<int, int>>{ { 14, 5 }, { 1, 2 }, { 2, 8 }, { 2, 10 }, { 2, 9 } });
+        //now there are 11 buckets
+        hash->rehash(4);
+        //key 14 moves to the 3-rd bucket
+        REQUIRE(hash->getAllItems() == std::vector<std::pair<int, int>>{ { 1, 2 }, { 2, 8 }, { 2, 10 }, { 2, 9 }, { 14, 5 } });
+    }
 
     SUBCASE("Coalesced hashing")
     {
