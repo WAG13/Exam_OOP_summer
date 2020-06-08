@@ -15,7 +15,19 @@ public:
 
 	//TODO: set operatrions (merge, diff, ...)
 
+private:
+	class IteratorImpl
+	{
+		virtual ~IteratorImpl() {};
+		virtual void increment() = 0;
+		virtual bool isEnd() = 0;
+		virtual T& getRef() = 0;
+		virtual T* getPtr() = 0;
+		virtual bool operator==(const IteratorImpl& impl2) = 0;
+		virtual bool operator!=(const IteratorImpl& impl2) = 0;
+	};
 
+public:
 	class Iterator
 	{
 		Set* set;
@@ -50,17 +62,6 @@ public:
 	virtual Iterator begin() = 0;
 	virtual Iterator end() = 0;
 
-private:
-	class IteratorImpl
-	{
-		virtual ~IteratorImpl() {};
-		virtual void increment() = 0;
-		virtual bool isEnd() = 0;
-		virtual T& getRef() = 0;
-		virtual T* getPtr() = 0;
-		virtual operator==(const IteratorImpl& impl2) = 0;
-		virtual operator!=(const IteratorImpl& impl2) = 0;
-	};
 };
 
 

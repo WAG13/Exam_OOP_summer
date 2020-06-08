@@ -7,6 +7,7 @@
 #include "../Trees/AVLTree.h"
 #include "../Trees/BPlusTree.h"
 #include "../Maps/TreeMap.h"
+#include "../Sets/TreeSet.h"
 #include <memory>
 #include <vector>
 
