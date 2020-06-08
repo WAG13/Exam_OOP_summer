@@ -1,21 +1,22 @@
 #pragma once
 
 #include "HashTable.h"
+#include <functional>
 #include <initializer_list>
 #include <vector>
 
-template <typename KeyT, typename ValueT, GetHashFuncType<KeyT> Hash, typename CollisionContainer>
-class BucketHashTable : public HashTable<KeyT, ValueT, Hash> {
+template <typename KeyT, typename ValueT, typename CollisionContainer>
+class BucketHashTable : public HashTable<KeyT, ValueT> {
 private:
 	std::vector<CollisionContainer> buckets;
 	size_t _size;
-	GetHashFuncType<KeyT> _second_hash;
+	std::function<size_t(KeyT const&, size_t)> hash, second_hash;
 	bool two_choice_enabled;
 
 	size_t getIndex(KeyT const& key) {
-		size_t index = Hash(key, buckets.size());
+		size_t index = hash(key, buckets.size());
 		if (two_choice_enabled) {
-			size_t secondary_index = _second_hash(key, buckets.size());
+			size_t secondary_index = second_hash(key, buckets.size());
 			if (buckets[index].size() > buckets[secondary_index].size()) {
 				index = secondary_index;
 			}
@@ -24,7 +25,7 @@ private:
 	}
 
 public:
-	BucketHashTable(size_t buckets_count = 1) : _size(0), two_choice_enabled(false) {
+	BucketHashTable(std::function<size_t(KeyT const&, size_t)> _hash, size_t buckets_count = 1) : hash(_hash), _size(0), two_choice_enabled(false) {
 		buckets.resize(buckets_count);
 	}
 
@@ -64,7 +65,7 @@ public:
 	bool remove(KeyT const& key, ValueT const& value) override {
 		if (!this->contains(key, value)) return false;
 
-		size_t index = Hash(key, buckets.size());
+		size_t index = hash(key, buckets.size());
 		for (auto iter = buckets[index].begin(); iter != buckets[index].end(); iter++) {
 			if (iter->second == value) {
 				buckets[index].erase(iter);
@@ -74,7 +75,7 @@ public:
 		}
 
 		if (two_choice_enabled) {
-			size_t secondary_index = _second_hash(key, buckets.size());
+			size_t secondary_index = second_hash(key, buckets.size());
 			for (auto iter = buckets[secondary_index].begin(); iter != buckets[secondary_index].end(); iter++) {
 				if (iter->second == value) {
 					buckets[secondary_index].erase(iter);
@@ -88,14 +89,14 @@ public:
 	}
 
 	bool remove(KeyT const& key) {
-		size_t index = Hash(key, buckets.size());
+		size_t index = hash(key, buckets.size());
 		size_t num_of_removed;
 
 		num_of_removed = buckets[index].size();
 		buckets[index].clear();
 
 		if (two_choice_enabled) {
-			size_t secondary_index = _second_hash(key, buckets.size());
+			size_t secondary_index = second_hash(key, buckets.size());
 			num_of_removed += buckets[secondary_index].size();
 			buckets[secondary_index].clear();
 		}
@@ -115,7 +116,7 @@ public:
 
 	std::vector<ValueT> find(KeyT const& key) const {
 		std::vector<ValueT> result;
-		size_t index = Hash(key, buckets.size());
+		size_t index = hash(key, buckets.size());
 		for (auto const& item : buckets[index]) {
 			if (item.first == key) {
 				result.push_back(item.second);
@@ -123,7 +124,7 @@ public:
 		}
 
 		if (two_choice_enabled) {
-			size_t secondary_index = _second_hash(key, buckets.size());
+			size_t secondary_index = second_hash(key, buckets.size());
 			if (index != secondary_index) {
 				for (auto const& item : buckets[secondary_index]) {
 					if (item.first == key) {
@@ -146,8 +147,8 @@ public:
 		return result;
 	}
 
-	void enableTwoChoiceHashing(size_t(*second_hash)(KeyT const&, size_t num_of_buckets)) {
-		_second_hash = second_hash;
+	void enableTwoChoiceHashing(std::function<size_t(KeyT const&, size_t)> _second_hash) {
+		second_hash = _second_hash;
 		two_choice_enabled = true;
 	}
 
