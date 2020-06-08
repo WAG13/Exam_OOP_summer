@@ -4,7 +4,7 @@
 #include <vector>
 #include <utility>
 
-template<typename ValueT, KeyT>
+template<typename ValueT, typename KeyT>
 class Map
 {
 public:
