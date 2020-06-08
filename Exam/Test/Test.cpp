@@ -1,15 +1,39 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 
 #include "doctest.h"
-#include "Trees/AVLTree.h"
-#include "Trees/BPlusTree.h"
-#include <vector>
+#include"../Data/DateTime.h"
+#include"../Data/DataGenerator.h"
+#include "../HashTables/BucketHashTable.h"
+#include "../Trees/AVLTree.h"
+#include "../Trees/BPlusTree.h"
 #include <memory>
+#include <vector>
 
 TEST_CASE("Data")
 {
     SUBCASE("Creating data")
     {
+        DateTime date1(1800, 12, 1, 0, 15, 0);
+        REQUIRE(date1.getDateTime() == "01.12.1800 00:15:00");
+        DateTime date2(2015, 14, 18, 12, 65, 8);
+        REQUIRE(date2.getDateTime() == "18.02.2016 13:05:08");
+        DateTime date3(2015, 12, 31, 25, 65, 8);
+        REQUIRE(date3.getDateTime() == "01.01.2016 02:05:08");
+        
+    }
+    SUBCASE("Creating random data")
+    {
+        DateTime min_date(1800, 1, 1, 0, 0, 0);
+        REQUIRE(min_date.getDateTime() == "01.01.1800 00:00:00");
+        DateTime max_date(2500, 1, 1, 0, 0, 0);
+        REQUIRE(max_date.getDateTime() == "01.01.2500 00:00:00");
+        DataGenerator<DateTime>* dataGen = new RandomDataGenerator<DateTime>();
+        vector<DateTime> random = dataGen->generateVector(min_date, max_date, 15);
+        REQUIRE(random.size() == 15);
+        for (auto& r : random) {
+            REQUIRE(r <= max_date);
+            REQUIRE(r >= min_date);
+        }
     }
 }
 
@@ -26,6 +50,10 @@ TEST_CASE("List")
 
 TEST_CASE("Hash")
 {
+    /*SUBCASE("Separate hashing") {
+        BucketHashTable<int, std::string, std::function<size_t(int)>, std::vector<std::pair<int, std::string>>> 
+            hash{ {1, "one"}, {2, "two"}, {3, "three"} };
+    }*/
 
     SUBCASE("Coalesced hashing")
     {
