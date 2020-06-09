@@ -17,7 +17,7 @@ public:
     //long long getKey()        const;
     std::string getDate()     const;
     std::string getTime()     const;
-    std::string getDateTime() const;
+    std::string toString() const;
     unsigned int getYear()    const { return year; }
     unsigned int getMonth()   const { return month; }
     unsigned int getDay()     const { return day; }

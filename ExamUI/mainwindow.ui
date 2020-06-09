@@ -241,42 +241,31 @@ QListView::item:selected {
                <property name="labelAlignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
-               <item row="0" column="0" colspan="2">
-                <widget class="QComboBox" name="KVReal_2">
-                 <item>
-                  <property name="text">
-                   <string>випадкові дані</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>додати своє значення</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item row="1" column="0">
+               <item row="0" column="0">
                 <widget class="QLabel" name="randomGenLabel">
                  <property name="text">
                   <string>Кількість:</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="1">
+               <item row="0" column="1">
                 <widget class="QSpinBox" name="randomGenCount1">
                  <property name="minimum">
                   <number>1</number>
                  </property>
+                 <property name="maximum">
+                  <number>99999</number>
+                 </property>
                 </widget>
                </item>
-               <item row="2" column="1">
+               <item row="1" column="1">
                 <widget class="QPushButton" name="generateRandom1">
                  <property name="text">
                   <string>Згенерувати</string>
                  </property>
                 </widget>
                </item>
-               <item row="3" column="0">
+               <item row="2" column="0">
                 <widget class="QLabel" name="label_11">
                  <property name="enabled">
                   <bool>true</bool>
@@ -286,7 +275,7 @@ QListView::item:selected {
                  </property>
                 </widget>
                </item>
-               <item row="3" column="1">
+               <item row="2" column="1">
                 <widget class="QDateTimeEdit" name="dateTimeEdit1">
                  <property name="enabled">
                   <bool>true</bool>
@@ -296,7 +285,7 @@ QListView::item:selected {
                  </property>
                 </widget>
                </item>
-               <item row="4" column="1">
+               <item row="3" column="1">
                 <widget class="QPushButton" name="addDateTime1">
                  <property name="enabled">
                   <bool>true</bool>
@@ -321,7 +310,18 @@ QListView::item:selected {
              </widget>
             </item>
             <item>
-             <widget class="QColumnView" name="columnView"/>
+             <widget class="QTableView" name="tableView">
+              <property name="enabled">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="createMap">
+              <property name="text">
+               <string>Створити Map</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -406,12 +406,7 @@ QListView::item:selected {
                </item>
                <item>
                 <property name="text">
-                 <string>зміни значення за ключем</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>додавання значення за ключем</string>
+                 <string>встановлення значення за ключем</string>
                 </property>
                </item>
                <item>
