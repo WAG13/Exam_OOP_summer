@@ -90,7 +90,9 @@ template <typename NodeT, typename ValueT, typename KeyT>
 NodeT* List<NodeT, ValueT, KeyT>::searchByValue(ValueT value) {
 	if (list_head) {
 		NodeT* temp = list_head;
-		while (temp != list_tail->next) {
+		bool circle = true;
+		while (temp && circle) {
+			if (temp == list_tail) circle = false;
 			if (temp->data == value) return temp;
 			temp = temp->next;
 		}
@@ -99,11 +101,13 @@ NodeT* List<NodeT, ValueT, KeyT>::searchByValue(ValueT value) {
 }
 
 template <typename NodeT, typename ValueT, typename KeyT>
-NodeT* List<NodeT, ValueT, KeyT>::searchByKey(KeyT value) {
+NodeT* List<NodeT, ValueT, KeyT>::searchByKey(KeyT key) {
 	if (list_head) {
 		NodeT* temp = list_head;
-		while (temp != list_tail->next) {
-			if (temp->data == value) return temp;
+		bool circle = true;
+		while (temp && circle) {
+			if (temp == list_tail) circle = false;
+			if (temp->getKeyByValue(keyGen) == key) return temp;
 			temp = temp->next;
 		}
 	}
@@ -155,8 +159,9 @@ void List<NodeT, ValueT, KeyT>::show()
 	{
 		NodeT* current_node = list_head;
 
-		while (current_node != list_tail->next)
-		{
+		bool circle = true;
+		while (current_node && circle) {
+			if (current_node == list_tail) circle = false;
 			std::cout << "(" << current_node->data <<" - "<< keyGen(current_node->data) << ")  ";
 			current_node = current_node->next; 
 		}
@@ -169,8 +174,9 @@ std::vector<std::pair<ValueT, KeyT>> List<NodeT, ValueT, KeyT>::toVector() const
 	std::vector<std::pair<ValueT, KeyT>> vector_list;
 	if (list_head){
 		NodeT* current_node = list_head;
-
-		while (current_node != list_tail->next){
+		bool circle = true;
+		while (current_node && circle){
+			if (current_node == list_tail) circle = false;
 			ValueT value = current_node->data;
 			KeyT key = current_node->getKeyByValue(keyGen);
 			vector_list.push_back(std::make_pair(value, key));
