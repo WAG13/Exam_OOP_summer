@@ -10,6 +10,7 @@
 #include "../Trees/BPlusTree.h"
 #include "../Maps/TreeMap.h"
 #include "../Maps/StandardMap.h"
+#include "../Maps/ListMap.h"
 #include "../Sets/TreeSet.h"
 #include "../Sets/VectorSet.h"
 #include "../Iterator.h"
@@ -263,6 +264,20 @@ TEST_CASE("Map")
 	{
 		std::unique_ptr<Map<std::string, int>> treeMap(new StandardMap<std::string, int>());
 		testMap(treeMap.get());
+	}
+
+	SUBCASE("Doubly Linked List Map")
+	{
+		std::unique_ptr<MapListType<std::string, int>> listType(new MapListTypeDouble<std::string, int>());
+		std::unique_ptr<Map<std::string, int>> listMap(new ListMap(listType.get()));
+		testMap(listMap.get());
+	}
+
+	SUBCASE("Doubly Linked Circular List Map")
+	{
+		std::unique_ptr<MapListType<std::string, int>> listType(new MapListTypeDoubleCircular<std::string, int>());
+		std::unique_ptr<Map<std::string, int>> listMap(new ListMap(listType.get()));
+		testMap(listMap.get());
 	}
 }
 

@@ -8,11 +8,16 @@
 #include "../Iterator.h"
 #include "ListNode.h"
 
+
+template<typename ValueT, typename KeyT>
+struct ListIteratorImpl;
+
+
 template <typename ValueT, typename KeyT>
 class DoublyLinkedListBase //linked list of DoublyListNode objects
 {
 public:
-	DoublyLinkedListBase(KeyT(*myKeyGen)(ValueT) = NULL);
+	DoublyLinkedListBase(KeyT(*myKeyGen)(ValueT));
 	virtual ~DoublyLinkedListBase();
 	void insertNewNode(ValueT);									//insert new node in order in the list
 	void show();									
@@ -26,6 +31,7 @@ public:
 	ForwardIterator<ValueT> end();
 
 protected:
+	friend ListIteratorImpl<ValueT, KeyT>;
 
 	DoublyListNode<ValueT, KeyT>* list_head;											//stores the pointer of first object in the list
 	DoublyListNode<ValueT, KeyT>* list_tail;											//stored the pointer of the last object in the list
@@ -39,20 +45,21 @@ protected:
 	virtual void append(ValueT, DoublyListNode<ValueT, KeyT>*) = 0;					//inserts new node after given node in the list
 	virtual void deleteNode(DoublyListNode<ValueT, KeyT>*) = 0;						//inserts new node after given node in the list
 };
-/* function for getting keys */
-template <typename ValueT, typename KeyT>
-KeyT keyGenDefault(ValueT data) {
-	return data;
-}
+
+template<typename ValueT>
+class DoublyLinkedListBaseSimple : public DoublyLinkedListBase<ValueT, ValueT>
+{
+	DoublyLinkedListBaseSimple()
+		: DoublyLinkedListBase(lists::detail::getValueAsKey<ValueT>)
+	{}
+};
 
 template <typename ValueT, typename KeyT>
 DoublyLinkedListBase<ValueT, KeyT>::DoublyLinkedListBase(KeyT (*myKeyGen)(ValueT))
 {
 	list_head = nullptr;
 	list_tail = nullptr;
-	(myKeyGen)
-		? keyGen = myKeyGen
-		: keyGen = keyGenDefault<ValueT, KeyT>;
+	keyGen = myKeyGen;
 }
 
 template <typename ValueT, typename KeyT>
@@ -116,7 +123,6 @@ DoublyListNode<ValueT, KeyT>* DoublyLinkedListBase<ValueT, KeyT>::searchByKey(Ke
 
 		DoublyListNode<ValueT, KeyT>* temp = list_head;
 		while (temp != list_tail->next) {
-			std::cout << temp->data << ' ' << keyGen(temp->data) << std::endl;
 			if (keyGen(temp->data) == key) return temp;
 			temp = temp->next;
 		}

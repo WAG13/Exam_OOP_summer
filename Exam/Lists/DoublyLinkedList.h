@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <functional>
+#include "Trees/SearchTree.h"
 #include "DoublyLinkedListBase.h"
 #include "ListNode.h"
 
@@ -10,7 +11,7 @@ template <typename ValueT, typename KeyT>
 class DoublyLinkedList : public DoublyLinkedListBase<ValueT, KeyT> //linked list of DoublyListNode objects
 {
 public:
-	DoublyLinkedList(KeyT(*myKeyGen)(ValueT) = NULL);
+	DoublyLinkedList(KeyT(*myKeyGen)(ValueT));
 	~DoublyLinkedList() override;
 
 private:
@@ -19,6 +20,14 @@ private:
 	void append(ValueT) override;										//inserts new node after the last node in the list
 	void append(ValueT, DoublyListNode<ValueT, KeyT>*) override;		//inserts new node after given node in the list
 	void deleteNode(DoublyListNode<ValueT, KeyT>*) override;			//inserts new node after given node in the list
+};
+
+template<typename ValueT>
+class DoublyLinkedListSimple : public DoublyLinkedList<ValueT, ValueT>
+{
+	DoublyLinkedListSimple()
+		: DoublyLinkedList(lists::detail::getValueAsKey<ValueT>)
+	{}
 };
 
 template <typename ValueT, typename KeyT>

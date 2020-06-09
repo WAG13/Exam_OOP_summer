@@ -10,7 +10,7 @@ template <typename ValueT, typename KeyT>
 class DoublyCircularLinkedList;
 
 template <typename ValueT, typename KeyT>
-class ListIteratorImpl;
+struct ListIteratorImpl;
 
 template <typename ValueT, typename KeyT>
 class Node
