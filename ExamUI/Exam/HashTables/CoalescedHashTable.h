@@ -92,8 +92,8 @@ private:
 	}
 
 public:
-	CoalescedHashTable(std::function<size_t(KeyT const&, size_t)> _hash, size_t capacity = 1) : 
-		hash(_hash), _size(0), two_choice_enabled(false) {
+	CoalescedHashTable(std::function<size_t(KeyT const&, size_t, size_t)> _hash, size_t capacity = 1) : 
+		hash(std::bind(_hash, std::placeholders::_1, 0, std::placeholders::_2)), _size(0), two_choice_enabled(false) {
 		table.resize(capacity, nullptr);
 	}
 
@@ -221,8 +221,8 @@ public:
 		return result;
 	}
 
-	void enableTwoChoiceHashing(std::function<size_t(KeyT const&, size_t)> _second_hash) override {
-		second_hash = _second_hash;
+	void enableTwoChoiceHashing(std::function<size_t(KeyT const&, size_t, size_t)> _second_hash) override {
+		second_hash = std::bind(_second_hash, std::placeholders::_1, 0, std::placeholders::_2);
 		two_choice_enabled = true;
 	}
 
