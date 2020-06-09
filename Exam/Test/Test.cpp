@@ -50,7 +50,6 @@ int foo(int element_value) { return (element_value + 10); };
 TEST_CASE("List")
 {
 
-
     SUBCASE("Creating Linked List")
     {
         int size = 150;
@@ -64,9 +63,9 @@ TEST_CASE("List")
             REQUIRE(vector_linked_list[i].first + 10 == vector_linked_list[i].second);
         }
 
-        REQUIRE(linked_list.searchByKey(5));
-        linked_list.deleteByKey(5);
-        REQUIRE(!linked_list.searchByKey(5));
+        REQUIRE(linked_list.searchByKey(15));
+        linked_list.deleteByKey(15);
+        REQUIRE(!linked_list.searchByKey(15));
         linked_list.deleteByKey(-5);
         REQUIRE(!linked_list.searchByKey(-5));
 
@@ -91,9 +90,9 @@ TEST_CASE("List")
             REQUIRE(vector_linked_list[i].first + 10 == vector_linked_list[i].second);
         }
 
-        REQUIRE(linked_list.searchByKey(5));
-        linked_list.deleteByKey(5);
-        REQUIRE(!linked_list.searchByKey(5));
+        REQUIRE(linked_list.searchByKey(15));
+        linked_list.deleteByKey(15);
+        REQUIRE(!linked_list.searchByKey(15));
         linked_list.deleteByKey(-5);
         REQUIRE(!linked_list.searchByKey(-5));
 
@@ -117,9 +116,9 @@ TEST_CASE("List")
             REQUIRE(vector_linked_list[i].first + 10 == vector_linked_list[i].second);
         }
 
-        REQUIRE(linked_list.searchByKey(5));
-        linked_list.deleteByKey(5);
-        REQUIRE(!linked_list.searchByKey(5));
+        REQUIRE(linked_list.searchByKey(15));
+        linked_list.deleteByKey(15);
+        REQUIRE(!linked_list.searchByKey(15));
         linked_list.deleteByKey(-5);
         REQUIRE(!linked_list.searchByKey(-5));
 
