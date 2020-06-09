@@ -9,29 +9,68 @@ class CoalescedHashTable : public HashTable<KeyT, ValueT> {
 private:
 	struct Cell {
 		std::pair<KeyT, ValueT> item;
-		size_t index, depth;
-		Cell* prev, next;
-		size_t bucket_num;
+		size_t index;
+		//size_t depth;
+		Cell* prev, *next;
+		//size_t bucket_num;
 
-		Cell(std::pair<KeyT, ValueT> const &item, size_t index, size_t depth, Cell* prev, Cell* next, size_t bucket_num) : 
-			item(item), index(index), depth(depth), prev(prev), next(next), bucket_num(bucket_num) {}
+		Cell(std::pair<KeyT, ValueT> const &item, size_t index, Cell* prev, Cell* next) : 
+			item(item), index(index), prev(prev), next(next) {}
+
+		/*void increaseDepthDown() {
+			Cell* current = this;
+			while (current) {
+				current->depth++;
+				current = current->next;
+			}
+		}
+
+		void decreaseDepthDown() {
+			Cell* current = this;
+			while (current) {
+				current->depth--;
+				current = current->next;
+			}
+		}*/
+
+		void unlink() {
+			if (prev) {
+				prev->next = next;
+			}
+			if (next) {
+				next->prev = prev;
+			}
+			//next->decreaseDepthDown();
+		}
+
+		void link_next_to(Cell* current) {
+			this->prev = current;
+			this->next = current->next;
+			if (current->next) {
+				current->next->prev = this;
+			}
+			current->next = this;
+			//this->depth = prev->depth;
+			//if (next) next->increaseDepthDown();
+		}
 	};
 
 	std::vector<Cell*> table;
-	size_t _size, buckets_count;
+	size_t _size;
+	//size_t buckets_count;
 	std::function<size_t(KeyT const&, size_t)> hash, second_hash;
 	bool two_choice_enabled;
 
 	size_t getIndex(KeyT const& key) {
 		size_t index = hash(key, table.size());
-		if (two_choice_enabled) {
+		/*if (two_choice_enabled) {
 			size_t secondary_index = second_hash(key, table.size());
 			if (table[secondary_index]) {
-				if (!table[index] || table[index]->depth > table[secondary_index]->depth)) {
+				if (!table[index] || table[index]->depth > table[secondary_index]->depth) {
 					index = secondary_index;
 				}
 			}
-		}
+		}*/
 		return index;
 	}
 
@@ -50,15 +89,9 @@ private:
 		return index;
 	}
 
-	void decreaseDepthDown(Cell* current) {
-		while (current) {
-			current->depth--;
-			current = current->next;
-		}
-	}
-
 public:
-	CoalescedHashTable(std::function<size_t(KeyT const&, size_t)> _hash, size_t capacity = 1) : hash(_hash), _size(0), two_choice_enabled(false), buckets_count(0) {
+	CoalescedHashTable(std::function<size_t(KeyT const&, size_t)> _hash, size_t capacity = 1) : 
+		hash(_hash), _size(0), two_choice_enabled(false) {
 		table.resize(capacity, nullptr);
 	}
 
@@ -84,24 +117,26 @@ public:
 		}
 		table.clear();
 		_size = 0;
-		buckets_count = 0;
+		//buckets_count = 0;
 	}
 
 	bool insert(KeyT const& key, ValueT const& value) override {
 		if (this->contains(key, value)) return false;
 		size_t index = this->getIndex(key);
 		Cell* current = table[index];
+
 		if (current) {
 			index = this->findEmptyCell();
 			if (index == SIZE_MAX) return false;
 			while (current->next) current = current->next;
-			auto new_cell = new Cell({ key, value }, index, current->depth + 1, current, nullptr, current->bucket_num);
+			auto new_cell = new Cell({ key, value }, index, current, nullptr);
 			current->next = new_cell;
+			table[index] = new_cell;
 		}
 		else {
-			buckets_count++;
-			table[index] = new Cell({ key, value }, index, 0, nullptr, nullptr, buckets_count);
+			table[index] = new Cell({ key, value }, index, nullptr, nullptr);
 		}
+
 		_size++;
 		return true;
 	}
@@ -110,30 +145,26 @@ public:
 		if (!this->contains(key, value)) return false;
 		size_t index = this->findIndex(key, value);
 		Cell* to_remove = table[index];
-
-		if (!to_remove->next) {
-			if (to_remove->prev) to_remove->prev->next = nullptr;
-			table[index] = nullptr;
-			buckets_count--;
-		}
-		else {
-			to_remove->next->prev = to_remove->prev;
-			if (to_remove->prev) to_remove->prev->next = to_remove->next;
-			else {
-				table[to_remove->next->index] = nullptr;
-				table[index] = to_remove->next;
-				to_remove->next->index = index;
-			}
-			this->decreaseDepthDown(to_remove);
-		}
+		table[index] = nullptr;
+		to_remove->unlink();
 		delete to_remove;
 		_size--;
+		this->rehash(0);
+	}
+
+	bool remove(KeyT const& key) override {
+		auto values_to_remove = this->find(key);
+		if (values_to_remove.empty()) return false;
+		for (ValueT const& value : values_to_remove) {
+			this->remove(key, value);
+		}
+		return true;
 	}
 
 	bool contains(KeyT const& key, ValueT const& value) const override {
-		auto items = this->find(key);
-		for (Cell* cell : items) {
-			if (cell->item.second == value) return true;
+		auto values = this->find(key);
+		for (ValueT const& found_value : values) {
+			if (found_value == value) return true;
 		}
 		return false;
 	}
@@ -149,7 +180,7 @@ public:
 			current = current->next;
 		}
 
-		if (two_choice_enabled) {
+		/*if (two_choice_enabled) {
 			size_t second_index = second_hash(key, table.size());
 			if (table[index]->bucket_num == table[second_index]->bucket_num) {
 				size_t first_depth = table[index]->depth, second_depth = table[second_index]->depth;
@@ -173,14 +204,41 @@ public:
 					current = current->next;
 				}
 			}
-		}
+		}*/
 
 		return result;
 	}
 
 	std::vector<std::pair<KeyT, ValueT>> getAllItems() const override {
 		std::vector<std::pair<KeyT, ValueT>> result;
-		//TODO
+		for (Cell* cell : table) {
+			if (cell) {
+				result.push_back(cell->item);
+			}
+		}
 		return result;
+	}
+
+	void enableTwoChoiceHashing(std::function<size_t(KeyT const&, size_t)> _second_hash) override {
+		second_hash = _second_hash;
+		two_choice_enabled = true;
+	}
+
+	void disableTwoChoiceHashing() override {
+		two_choice_enabled = false;
+	}
+
+	void rehash(size_t add_count) override {
+		size_t new_capacity = table.size() + add_count;
+		auto items = this->getAllItems();
+		this->clear();
+		table.resize(new_capacity);
+		for (auto const& item : items) {
+			this->insert(item.first, item.second);
+		}
+	}
+
+	~CoalescedHashTable() {
+		this->clear();
 	}
 };
