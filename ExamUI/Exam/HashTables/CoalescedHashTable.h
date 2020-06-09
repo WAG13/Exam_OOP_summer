@@ -4,6 +4,8 @@
 #include <functional>
 #include <vector>
 
+//Some code is commented due to the inefficiency of 2-choice-hashing (it needs a lot more fields to keep info), but it works (except for remove())
+
 template <typename KeyT, typename ValueT>
 class CoalescedHashTable : public HashTable<KeyT, ValueT> {
 private:
@@ -43,16 +45,16 @@ private:
 			//next->decreaseDepthDown();
 		}
 
-		void link_next_to(Cell* current) {
+		/*void link_next_to(Cell* current) {
 			this->prev = current;
 			this->next = current->next;
 			if (current->next) {
 				current->next->prev = this;
 			}
 			current->next = this;
-			//this->depth = prev->depth;
-			//if (next) next->increaseDepthDown();
-		}
+			this->depth = prev->depth;
+			if (next) next->increaseDepthDown();
+		}*/
 	};
 
 	std::vector<Cell*> table;
