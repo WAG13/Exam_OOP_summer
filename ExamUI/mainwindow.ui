@@ -209,7 +209,7 @@ QListView::item:selected {
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -524,55 +524,14 @@ QListView::item:selected {
                <property name="labelAlignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
-               <item row="0" column="0" colspan="2">
-                <widget class="QComboBox" name="KVReal_4">
-                 <item>
-                  <property name="text">
-                   <string>випадкові дані</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>ввести вручну</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="label_17">
-                 <property name="text">
-                  <string>Кількість елементів множини А:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QSpinBox" name="spinBox_2"/>
-               </item>
-               <item row="2" column="0">
-                <widget class="QLabel" name="label_21">
-                 <property name="text">
-                  <string>Кількість елементів множини В:</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="1">
-                <widget class="QSpinBox" name="spinBox_3"/>
-               </item>
-               <item row="3" column="1">
-                <widget class="QPushButton" name="pushButton_6">
-                 <property name="text">
-                  <string>Згенерувати</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="0">
+               <item row="0" column="0">
                 <widget class="QLabel" name="label">
                  <property name="text">
                   <string>Додати до</string>
                  </property>
                 </widget>
                </item>
-               <item row="4" column="1">
+               <item row="0" column="1">
                 <widget class="QComboBox" name="KVReal_5">
                  <item>
                   <property name="text">
@@ -586,21 +545,38 @@ QListView::item:selected {
                  </item>
                 </widget>
                </item>
-               <item row="5" column="0">
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_17">
+                 <property name="text">
+                  <string>Кількість:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QSpinBox" name="spinBox_2"/>
+               </item>
+               <item row="2" column="1">
+                <widget class="QPushButton" name="pushButton_6">
+                 <property name="text">
+                  <string>Згенерувати</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
                 <widget class="QLabel" name="label_18">
                  <property name="text">
                   <string>Значення:</string>
                  </property>
                 </widget>
                </item>
-               <item row="5" column="1">
+               <item row="3" column="1">
                 <widget class="QDateTimeEdit" name="dateTimeEdit_4">
                  <property name="displayFormat">
                   <string>dd.MM.yyyy hh:mm:ss</string>
                  </property>
                 </widget>
                </item>
-               <item row="6" column="1">
+               <item row="4" column="1">
                 <widget class="QPushButton" name="pushButton_5">
                  <property name="text">
                   <string>Додати</string>
@@ -624,7 +600,7 @@ QListView::item:selected {
                </widget>
               </item>
               <item>
-               <widget class="QColumnView" name="columnView_2"/>
+               <widget class="QListView" name="listView_2"/>
               </item>
              </layout>
             </item>
@@ -638,7 +614,7 @@ QListView::item:selected {
                </widget>
               </item>
               <item>
-               <widget class="QColumnView" name="columnView_3"/>
+               <widget class="QListView" name="listView_3"/>
               </item>
              </layout>
             </item>
@@ -680,17 +656,37 @@ QListView::item:selected {
               <widget class="QComboBox" name="KVReal_3">
                <item>
                 <property name="text">
-                 <string>хеш-таблиця</string>
+                 <string> хеш-таблиця (coalesced)</string>
                 </property>
                </item>
                <item>
                 <property name="text">
-                 <string>збалансоване дерево пошуку</string>
+                 <string> хеш-таблиця (hopscotch)</string>
                 </property>
                </item>
                <item>
                 <property name="text">
-                 <string>впорядкований список</string>
+                 <string>збалансоване дерево пошуку (AVL)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>збалансоване дерево пошуку (B+)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>список (двозв'язний)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>список (двозв'язний циклічний)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>std::vector</string>
                 </property>
                </item>
               </widget>
@@ -711,59 +707,61 @@ QListView::item:selected {
                </item>
                <item>
                 <property name="text">
-                 <string>додати елемент</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
                  <string>вилучити елемент</string>
                 </property>
                </item>
               </widget>
              </item>
              <item row="3" column="0">
-              <widget class="QLabel" name="label_14">
+              <widget class="QLabel" name="label_15">
                <property name="text">
-                <string>Ключ:</string>
+                <string>Елемент:</string>
                </property>
               </widget>
              </item>
              <item row="3" column="1">
-              <layout class="QVBoxLayout" name="verticalLayout_9">
-               <item>
-                <widget class="QSpinBox" name="KVKeyInt_2"/>
-               </item>
-               <item>
-                <widget class="QDateTimeEdit" name="KVKeyDate_2">
-                 <property name="displayFormat">
-                  <string>dd.MM.yyyy hh:mm:ss</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-             <item row="4" column="0">
-              <widget class="QLabel" name="label_15">
-               <property name="text">
-                <string>Значення:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="1">
               <widget class="QDateTimeEdit" name="dateTimeEdit_3">
                <property name="displayFormat">
                 <string>dd.MM.yyyy hh:mm:ss</string>
                </property>
               </widget>
              </item>
-             <item row="5" column="0" colspan="2">
+             <item row="4" column="0">
+              <widget class="QLabel" name="label_5">
+               <property name="text">
+                <string>Множина:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QComboBox" name="comboBox">
+               <item>
+                <property name="text">
+                 <string>множина А</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>множина В</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="5" column="1">
+              <widget class="QPushButton" name="pushButton_2">
+               <property name="text">
+                <string>Виконати</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0" colspan="2">
               <widget class="QLabel" name="label_22">
                <property name="text">
                 <string>Операції над множинами:</string>
                </property>
               </widget>
              </item>
-             <item row="6" column="0" colspan="2">
+             <item row="7" column="0" colspan="2">
               <widget class="QComboBox" name="KVOperations_3">
                <item>
                 <property name="text">
@@ -787,7 +785,14 @@ QListView::item:selected {
                </item>
               </widget>
              </item>
-             <item row="8" column="0" colspan="2">
+             <item row="8" column="1">
+              <widget class="QPushButton" name="pushButton_3">
+               <property name="text">
+                <string>Виконати</string>
+               </property>
+              </widget>
+             </item>
+             <item row="9" column="0" colspan="2">
               <layout class="QVBoxLayout" name="verticalLayout_10">
                <item>
                 <widget class="QLabel" name="label_16">
@@ -804,13 +809,6 @@ QListView::item:selected {
                 </widget>
                </item>
               </layout>
-             </item>
-             <item row="7" column="1">
-              <widget class="QPushButton" name="pushButton_3">
-               <property name="text">
-                <string>Виконати</string>
-               </property>
-              </widget>
              </item>
             </layout>
            </item>

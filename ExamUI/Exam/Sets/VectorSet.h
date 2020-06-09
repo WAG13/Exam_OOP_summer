@@ -71,13 +71,13 @@ private:
 template<typename T>
 ForwardIterator<T> VectorSet<T>::begin()
 {
-	return ForwardIterator(new VectorSet<T>::VectorSetIteratorImpl(&vector));
+    return ForwardIterator<T>(new VectorSet<T>::VectorSetIteratorImpl(&vector));
 }
 
 template<typename T>
 ForwardIterator<T> VectorSet<T>::end()
 {
-	return ForwardIterator(new VectorSet<T>::VectorSetIteratorImpl(nullptr));
+    return ForwardIterator<T>(new VectorSet<T>::VectorSetIteratorImpl(nullptr));
 }
 
 template<typename T>

@@ -6,6 +6,9 @@
 #include "Exam/Maps/StandardMap.h"
 #include "Exam/Maps/ListMap.h"
 #include "Exam/Maps/TreeMap.h"
+#include "Exam/Sets/Set.h"
+#include "Exam/Sets/TreeSet.h"
+#include "Exam/Sets/VectorSet.h"
 #include <QDate>
 #include <QTime>
 #include <memory>
@@ -20,8 +23,13 @@ MainWindow::MainWindow(QWidget *parent)
     mapDateTimeModel = new QStandardItemModel();
     ui->tableView->setModel(mapDateTimeModel);
 
+    setDateTimeModelA = new QStandardItemModel();
+    ui->listView_2->setModel(setDateTimeModelA);
+    setDateTimeModelB = new QStandardItemModel();
+    ui->listView_3->setModel(setDateTimeModelB);
 
     resetMaps(6);
+    resetSets(4);
 }
 
 MainWindow::~MainWindow()
@@ -29,6 +37,10 @@ MainWindow::~MainWindow()
     delete ui;
     delete intDateMap;
     delete mapDateTimeModel;
+    delete dateSetA;
+    delete dateSetB;
+    delete setDateTimeModelA;
+    delete setDateTimeModelB;
 }
 
 void MainWindow::printMessage(QString string)
@@ -51,6 +63,30 @@ void MainWindow::printElapsedTime(qint64 milliseconds)
 {
     printMessage("Операція зайняла " + QString::number(milliseconds) + " мілісекунд.");
 }
+
+
+DateTime MainWindow::toDateTime(const QDateTime& dateTime)
+{
+    QDate qDate = dateTime.date();
+    QTime qTime = dateTime.time();
+    return DateTime(qDate.year(), qDate.month(), qDate.day(), qTime.hour(), qTime.minute(), qTime.second());
+}
+
+
+
+void MainWindow::runComputationOnCurrentTab(std::function<QVector<QString>()> func)
+{
+    Computation* computation = new Computation(func);
+    connect(computation, &Computation::done, this, &MainWindow::printElapsedTime);
+    connect(computation, &Computation::printLine, this, &MainWindow::printMessage);
+    compHandler.start(computation);
+}
+
+
+////////////////////////
+/// TAB 1 (Maps)
+////////////////////////
+
 
 void MainWindow::on_KVReal_currentIndexChanged(int index)
 {
@@ -113,12 +149,6 @@ void MainWindow::resetMaps(int typeID)
 }
 
 
-
-void MainWindow::on_KVReal_3_currentIndexChanged(int index)
-{
-    printMessage(QString::number(index));
-}
-
 void MainWindow::on_generateRandom1_clicked()
 {
     static RandomDataGenerator<DateTime> dataGen;
@@ -164,25 +194,6 @@ void MainWindow::on_createMap_clicked()
 {
     resetMaps(ui->KVReal->currentIndex());
 }
-
-
-DateTime MainWindow::toDateTime(const QDateTime& dateTime)
-{
-    QDate qDate = dateTime.date();
-    QTime qTime = dateTime.time();
-    return DateTime(qDate.year(), qDate.month(), qDate.day(), qTime.hour(), qTime.minute(), qTime.second());
-}
-
-
-
-void MainWindow::runComputationOnCurrentTab(std::function<QVector<QString>()> func)
-{
-    Computation* computation = new Computation(func);
-    connect(computation, &Computation::done, this, &MainWindow::printElapsedTime);
-    connect(computation, &Computation::printLine, this, &MainWindow::printMessage);
-    compHandler.start(computation);
-}
-
 
 void MainWindow::on_pushButton_clicked()
 {
@@ -286,4 +297,263 @@ void MainWindow::on_pushButton_clicked()
         });
         break;
     }
+}
+
+
+
+////////////////////////
+/// TAB 2 (Sets)
+////////////////////////
+
+
+Set<DateTime>* MainWindow::getSet(int typeID)
+{
+    SetTreeType<DateTime>* setTreeType;
+    switch (typeID)
+    {
+    case 3:
+        //B+
+        setTreeType = new SetTreeTypeBPlus<DateTime>(500);
+        return new TreeSet<DateTime>(setTreeType);
+    case 4:
+        //Doubly linked
+        setTreeType = new SetTreeTypeBPlus<DateTime>(500);
+        delete new TreeSet<DateTime>(setTreeType);
+    case 5:
+        //Doubly linked circular
+        setTreeType = new SetTreeTypeBPlus<DateTime>(500);
+        delete new TreeSet<DateTime>(setTreeType);
+    case 2:
+        //AVL
+        setTreeType = new SetTreeTypeAVL<DateTime>();
+        return new TreeSet<DateTime>(setTreeType);
+    case 0:
+        //Coalesced
+        setTreeType = new SetTreeTypeBPlus<DateTime>(500);
+        delete new TreeSet<DateTime>(setTreeType);
+    case 1:
+        //Hopscotch
+        setTreeType = new SetTreeTypeBPlus<DateTime>(500);
+        delete new TreeSet<DateTime>(setTreeType);
+    case 6:
+        //std::vector
+        return new VectorSet<DateTime>();
+    }
+    return nullptr;
+}
+
+void MainWindow::resetSets(int typeID)
+{
+    if (intDateMap)
+    {
+        delete dateSetA;
+        delete dateSetB;
+        printMessage("Видаляємо контейнер");
+    }
+
+    dateSetA = getSet(typeID);
+    dateSetB = getSet(typeID);
+
+    printMessage("Створили новий контейнер");
+
+    setDateTimeModelA->clear();
+    setDateTimeModelB->clear();
+}
+
+void MainWindow::updateModels(bool setB)
+{
+    QStandardItemModel* model = setB ? setDateTimeModelB : setDateTimeModelA;
+    Set<DateTime>* set = setB ? dateSetB : dateSetA;
+    model->clear();
+    for (auto it = set->begin(); it != set->end(); it++)
+    {
+        model->appendRow(new QStandardItem(QString::fromStdString(it->toString())));
+    }
+}
+
+void MainWindow::on_pushButton_6_clicked()
+{
+    static RandomDataGenerator<DateTime> dataGen;
+    static DateTime min(2000, 1, 1, 0, 0, 0);
+    static DateTime max(2100, 1, 1, 0, 0, 0);
+
+    int count = ui->spinBox_2->value();
+    std::vector<DateTime> random = dataGen.generateVector(min, max, count);
+    //printMessage("Додали " + QString::number(count) + " нових дат");
+
+    addSetDateTime(random, ui->KVReal_5->currentIndex());
+}
+
+void MainWindow::on_pushButton_5_clicked()
+{
+    QDateTime qDateTime = ui->dateTimeEdit1->dateTime();
+    DateTime dateTime = toDateTime(qDateTime);
+    //printMessage("Додали " + QString::fromStdString(dateTime.toString()));
+
+    addSetDateTime(dateTime, ui->KVReal_5->currentIndex());
+}
+
+void MainWindow::addSetDateTime(const DateTime &dateTime, bool setB)
+{
+    Set<DateTime>* set;
+    QStandardItemModel* model;
+    QListView* view;
+
+    if (setB) {
+        set = dateSetB;
+        model = setDateTimeModelB;
+        view = ui->listView_3;
+    } else {
+        set = dateSetA;
+        model = setDateTimeModelA;
+        view = ui->listView_2;
+    }
+
+    if (!set->contains(dateTime))
+        set->insert(dateTime);
+    model->appendRow(new QStandardItem(QString::fromStdString(dateTime.toString())));
+}
+
+void MainWindow::addSetDateTime(const std::vector<DateTime> &dateTimes, bool setB)
+{
+    for (DateTime dateTime : dateTimes)
+        addSetDateTime(dateTime, setB);
+}
+
+void MainWindow::on_pushButton_2_clicked()
+{
+    DateTime value = toDateTime(ui->dateTimeEdit_3->dateTime());
+    int type = ui->KVOperations_2->currentIndex();
+    bool setB = ui->comboBox->currentIndex();
+    Set<DateTime>* set = setB ? dateSetB : dateSetA;
+
+
+    switch (type)
+    {
+    case 0: //contains?
+        runComputationOnCurrentTab([&]()
+        {
+            QVector<QString> result;
+            setMutex.lock();
+
+            if (set->contains(value)) {
+                result.push_back("Містить елемент " + QString::fromStdString(value.toString()));
+            }
+            else {
+                result.push_back("Не містить елемент " + QString::fromStdString(value.toString()));
+            }
+
+            setMutex.unlock();
+            return result;
+        });
+        break;
+    case 1: //remove element
+        Computation* computation = new Computation([&]()
+        {
+            setMutex.lock();
+
+            if (!set->contains(value)) {
+                update = false;
+            } else {
+                update = true;
+                set->remove(value);
+            }
+            setMutex.unlock();
+            return QVector<QString>();
+        });
+        updateSetB = setB;
+        connect(computation, &Computation::done, this, &MainWindow::handleRemoval);
+        connect(computation, &Computation::printLine, this, &MainWindow::printMessage);
+        compHandler.start(computation);
+        break;
+    }
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    int setImpl = ui->KVReal_3->currentIndex();
+    int type = ui->KVOperations_3->currentIndex();
+    switch (type)
+    {
+    case 0: //union
+        runComputationOnCurrentTab([&]()
+        {
+            QVector<QString> result;
+            setMutex.lock();
+
+            std::unique_ptr<Set<DateTime>> set(getSet(setImpl));
+
+            set->insertUnion(dateSetA, dateSetB);
+
+            for (auto it = set->begin(); it != set->end(); it++)
+                result.push_back(QString::fromStdString(it->toString()));
+
+            setMutex.unlock();
+            return result;
+        });
+        break;
+    case 1: //intersection
+        runComputationOnCurrentTab([&]()
+        {
+            QVector<QString> result;
+            setMutex.lock();
+
+            std::unique_ptr<Set<DateTime>> set(getSet(setImpl));
+
+            set->insertIntersection(dateSetA, dateSetB);
+
+            for (auto it = set->begin(); it != set->end(); it++)
+                result.push_back(QString::fromStdString(it->toString()));
+
+            setMutex.unlock();
+            return result;
+        });
+        break;
+    case 2: //complement
+        runComputationOnCurrentTab([&]()
+        {
+            QVector<QString> result;
+            setMutex.lock();
+
+            std::unique_ptr<Set<DateTime>> set(getSet(setImpl));
+
+            set->insertComplement(dateSetA, dateSetB);
+
+            for (auto it = set->begin(); it != set->end(); it++)
+                result.push_back(QString::fromStdString(it->toString()));
+
+            setMutex.unlock();
+            return result;
+        });
+        break;
+    case 3: //symmetrical diff
+        runComputationOnCurrentTab([&]()
+        {
+            QVector<QString> result;
+            setMutex.lock();
+
+            std::unique_ptr<Set<DateTime>> set(getSet(setImpl));
+
+            set->insertSymmetricDiff(dateSetA, dateSetB);
+
+            for (auto it = set->begin(); it != set->end(); it++)
+                result.push_back(QString::fromStdString(it->toString()));
+
+            setMutex.unlock();
+            return result;
+        });
+        break;
+    }
+}
+
+void MainWindow::handleRemoval(qint64 milliseconds)
+{
+    printElapsedTime(milliseconds);
+    if (update)
+        updateModels(updateSetB);
+}
+
+void MainWindow::on_KVReal_3_currentIndexChanged(int index)
+{
+    resetSets(index);
 }
