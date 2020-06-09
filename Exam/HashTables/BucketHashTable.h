@@ -25,8 +25,8 @@ private:
 	}
 
 public:
-	BucketHashTable(std::function<size_t(KeyT const&, size_t)> _hash, size_t buckets_count = 1) : hash(_hash), _size(0), two_choice_enabled(false) {
-		buckets.resize(buckets_count);
+	BucketHashTable(std::function<size_t(KeyT const&, size_t)> _hash, size_t capacity = 1) : hash(_hash), _size(0), two_choice_enabled(false) {
+		buckets.resize(capacity);
 	}
 
 	/*BucketHashTable(size_t buckets_count, std::initializer_list<std::pair<KeyT, ValueT>> init) {
@@ -38,14 +38,14 @@ public:
 	}*/
 
 	bool empty() const override {
-		return buckets.empty();
+		return _size == 0;
 	}
 
 	size_t size() const override {
 		return _size;
 	}
 
-	size_t buckets_count() const {
+	size_t capacity() const override {
 		return buckets.size();
 	}
 
