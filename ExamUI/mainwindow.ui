@@ -250,32 +250,27 @@ QListView::item:selected {
                  </item>
                  <item>
                   <property name="text">
-                   <string>ввести вручну</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>зчитати з файлу</string>
+                   <string>додати своє значення</string>
                   </property>
                  </item>
                 </widget>
                </item>
                <item row="1" column="0">
-                <widget class="QLabel" name="label_10">
+                <widget class="QLabel" name="randomGenLabel">
                  <property name="text">
                   <string>Кількість:</string>
                  </property>
                 </widget>
                </item>
                <item row="1" column="1">
-                <widget class="QSpinBox" name="spinBox">
+                <widget class="QSpinBox" name="randomGenCount1">
                  <property name="minimum">
                   <number>1</number>
                  </property>
                 </widget>
                </item>
                <item row="2" column="1">
-                <widget class="QPushButton" name="pushButton_4">
+                <widget class="QPushButton" name="generateRandom1">
                  <property name="text">
                   <string>Згенерувати</string>
                  </property>
@@ -289,14 +284,14 @@ QListView::item:selected {
                 </widget>
                </item>
                <item row="3" column="1">
-                <widget class="QDateTimeEdit" name="dateTimeEdit_2">
+                <widget class="QDateTimeEdit" name="dateTimeEdit1">
                  <property name="displayFormat">
                   <string>dd.MM.yyyy hh:mm:ss</string>
                  </property>
                 </widget>
                </item>
                <item row="4" column="1">
-                <widget class="QPushButton" name="pushButton_2">
+                <widget class="QPushButton" name="addDateTime1">
                  <property name="text">
                   <string>Додати</string>
                  </property>
@@ -570,11 +565,6 @@ QListView::item:selected {
                  <item>
                   <property name="text">
                    <string>ввести вручну</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>зчитати з файлу</string>
                   </property>
                  </item>
                 </widget>
@@ -900,11 +890,6 @@ QListView::item:selected {
                  <item>
                   <property name="text">
                    <string>ввести вручну</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>зчитати з файлу</string>
                   </property>
                  </item>
                 </widget>

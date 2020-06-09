@@ -13,3 +13,8 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
+void MainWindow::on_KVReal_2_currentIndexChanged(int index)
+{
+
+}
