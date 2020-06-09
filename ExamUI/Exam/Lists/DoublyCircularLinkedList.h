@@ -60,25 +60,29 @@ void DoublyCircularLinkedList<ValueT, KeyT>::prepend(ValueT dataIn)
 	DoublyListNode<ValueT, KeyT>* new_node = new DoublyListNode<ValueT, KeyT>(dataIn);
 
 	if (!list_head) {
-		new_node->next = new_node->prev = new_node;
 		list_head = new_node;
+		list_tail = new_node;
 	}
 	else {
-		DoublyListNode<ValueT, KeyT>* new_node = new DoublyListNode<ValueT, KeyT>(dataIn);
 		new_node->next = list_head;
-		new_node->prev = list_tail;
-		list_head = new_node; 
-		list_tail->next = list_head->prev = new_node;
 	}
-
-	list_tail = list_head->prev;
+	list_head = new_node;
 }
 
 template <typename ValueT, typename KeyT>
 void DoublyCircularLinkedList<ValueT, KeyT>::prepend(ValueT dataIn, DoublyListNode<ValueT, KeyT>* node)
 {
 	if (!node) return;
-	(node == list_head) ? prepend(dataIn) : append(dataIn, node->prev);
+	if (node == list_head) prepend(dataIn);
+	else {
+		DoublyListNode<ValueT, KeyT>* new_node = new DoublyListNode<ValueT, KeyT>(dataIn);
+
+		new_node->prev = node->prev;
+		node->prev = new_node;
+		new_node->next = node;
+		if (new_node->prev)
+			node->prev->next = new_node;
+	}
 }
 
 template <typename ValueT, typename KeyT>
@@ -87,16 +91,14 @@ void DoublyCircularLinkedList<ValueT, KeyT>::append(ValueT dataIn)
 	DoublyListNode<ValueT, KeyT>* new_node = new DoublyListNode<ValueT, KeyT>(dataIn);
 
 	if (!list_head) {
-		new_node->next = new_node->prev = new_node;
 		list_head = new_node;
+		list_tail = new_node;
 	}
 	else {
-		new_node->next = list_head;
-		list_head->prev = new_node;
-		new_node->prev = list_tail;
 		list_tail->next = new_node;
+		new_node->prev = list_tail;
+		list_tail = new_node;
 	}
-	list_tail = list_head->prev;
 }
 
 template <typename ValueT, typename KeyT>
@@ -106,44 +108,33 @@ void DoublyCircularLinkedList<ValueT, KeyT>::append(ValueT dataIn, DoublyListNod
 	if (node == list_tail) append(dataIn);
 	else {
 		DoublyListNode<ValueT, KeyT>* new_node = new DoublyListNode<ValueT, KeyT>(dataIn);
-		DoublyListNode<ValueT, KeyT>* next_node = node->next;
-		
+		new_node->next = node->next;
 		node->next = new_node;
 		new_node->prev = node;
-		new_node->next = next_node;
-		next_node->prev = new_node;
+		if (new_node->next)
+			new_node->next->prev = new_node;
 	}
 }
 
 /* DELETE */
 template <typename ValueT, typename KeyT>
 void DoublyCircularLinkedList<ValueT, KeyT>::deleteNode(DoublyListNode<ValueT, KeyT>* node) {
-	if (node && list_head) {
-		DoublyListNode<ValueT, KeyT>* prev_node = node->prev;
-
-		if (node->next == node) {
-			list_head = nullptr;
-			list_tail = nullptr;
-			return;
+	if (node) {
+		if (node == list_head) {
+			list_head = node->next;
+			node->next->prev = nullptr;
 		}
-		else if (node == list_head) {
-			prev_node = list_head->prev;
-			list_head = list_head->next;
-			prev_node->next = list_head;
-			list_head->prev = prev_node;
-		}
-		else if (node == list_head->prev) {
-			prev_node->next = list_head;
-			list_head->prev = prev_node;
+		else if (node == list_tail) {
+			list_tail = node->prev;
+			node->prev->next = nullptr;
 		}
 		else {
-			DoublyListNode<ValueT, KeyT>* temp = node->next;
-			prev_node->next = temp;
-			temp->prev = prev_node;
+			if (node->next->prev)
+				node->next->prev = node->prev;
+			if (node->prev)
+				node->prev->next = node->next;
 		}
-		list_tail = list_head->prev;
 		delete node;
-
 	}
 }
 
