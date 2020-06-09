@@ -278,6 +278,9 @@ QListView::item:selected {
                </item>
                <item row="3" column="0">
                 <widget class="QLabel" name="label_11">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="text">
                   <string>Значення:</string>
                  </property>
@@ -285,6 +288,9 @@ QListView::item:selected {
                </item>
                <item row="3" column="1">
                 <widget class="QDateTimeEdit" name="dateTimeEdit1">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="displayFormat">
                   <string>dd.MM.yyyy hh:mm:ss</string>
                  </property>
@@ -292,6 +298,9 @@ QListView::item:selected {
                </item>
                <item row="4" column="1">
                 <widget class="QPushButton" name="addDateTime1">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="text">
                   <string>Додати</string>
                  </property>
@@ -346,80 +355,49 @@ QListView::item:selected {
               <widget class="QComboBox" name="KVReal">
                <item>
                 <property name="text">
-                 <string>хеш-таблиця</string>
+                 <string>хеш-таблиця (coalesced)</string>
                 </property>
                </item>
                <item>
                 <property name="text">
-                 <string>збалансоване дерево пошуку</string>
+                 <string>хеш-таблиця (hopscotch)</string>
                 </property>
                </item>
                <item>
                 <property name="text">
-                 <string>впорядкований список</string>
+                 <string>збалансоване дерево пошуку (AVL)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>збалансоване дерево пошуку (B+)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>впорядкований список (двозв'язний)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>впорядкований список (двозв'язний циклічний)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>std::map</string>
                 </property>
                </item>
               </widget>
              </item>
              <item row="1" column="0">
-              <widget class="QLabel" name="label_5">
-               <property name="text">
-                <string>Тип ключа:</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QComboBox" name="KVKeytype">
-               <item>
-                <property name="text">
-                 <string>int</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>DateTime</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>year</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>month</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>day</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>hour</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>minute</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>second</string>
-                </property>
-               </item>
-              </widget>
-             </item>
-             <item row="2" column="0">
               <widget class="QLabel" name="label_2">
                <property name="text">
                 <string>Операції</string>
                </property>
               </widget>
              </item>
-             <item row="2" column="1">
+             <item row="1" column="1">
               <widget class="QComboBox" name="KVOperations">
                <item>
                 <property name="text">
@@ -458,49 +436,42 @@ QListView::item:selected {
                </item>
               </widget>
              </item>
-             <item row="3" column="0">
+             <item row="2" column="0">
               <widget class="QLabel" name="label_6">
                <property name="text">
                 <string>Ключ:</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="1">
+             <item row="2" column="1">
               <layout class="QVBoxLayout" name="verticalLayout">
                <item>
                 <widget class="QSpinBox" name="KVKeyInt"/>
                </item>
-               <item>
-                <widget class="QDateTimeEdit" name="KVKeyDate">
-                 <property name="displayFormat">
-                  <string>dd.MM.yyyy hh:mm:ss</string>
-                 </property>
-                </widget>
-               </item>
               </layout>
              </item>
-             <item row="4" column="0">
+             <item row="3" column="0">
               <widget class="QLabel" name="label_7">
                <property name="text">
                 <string>Значення:</string>
                </property>
               </widget>
              </item>
-             <item row="4" column="1">
+             <item row="3" column="1">
               <widget class="QDateTimeEdit" name="dateTimeEdit">
                <property name="displayFormat">
                 <string>dd.MM.yyyy hh:mm:ss</string>
                </property>
               </widget>
              </item>
-             <item row="5" column="1">
+             <item row="4" column="1">
               <widget class="QPushButton" name="pushButton">
                <property name="text">
                 <string>Виконати</string>
                </property>
               </widget>
              </item>
-             <item row="6" column="0" colspan="2">
+             <item row="5" column="0" colspan="2">
               <layout class="QVBoxLayout" name="verticalLayout_4">
                <item>
                 <widget class="QLabel" name="label_8">
@@ -511,6 +482,9 @@ QListView::item:selected {
                </item>
                <item>
                 <widget class="QPlainTextEdit" name="plainTextEdit_2">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
                  <property name="readOnly">
                   <bool>true</bool>
                  </property>

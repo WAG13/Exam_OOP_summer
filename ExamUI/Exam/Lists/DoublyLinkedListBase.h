@@ -50,7 +50,7 @@ template<typename ValueT>
 class DoublyLinkedListBaseSimple : public DoublyLinkedListBase<ValueT, ValueT>
 {
 	DoublyLinkedListBaseSimple()
-		: DoublyLinkedListBase(lists::detail::getValueAsKey<ValueT>)
+        : DoublyLinkedListBase<ValueT, ValueT>(lists::detail::getValueAsKey<ValueT>)
 	{}
 };
 
@@ -173,7 +173,7 @@ void DoublyLinkedListBase<ValueT, KeyT>::show()
 	}
 	else
 	{
-		DoublyListNode* current_node = list_head;
+        DoublyListNode<ValueT, KeyT>* current_node = list_head;
 
 		while (current_node != list_tail->next)
 		{
@@ -247,11 +247,11 @@ struct ListIteratorImpl : public ForwardIteratorImpl<ValueT>
 template<typename ValueT, typename KeyT>
 ForwardIterator<ValueT> DoublyLinkedListBase<ValueT, KeyT>::begin()
 {
-	return ForwardIterator(new ListIteratorImpl<ValueT, KeyT>(this, this->list_head));
+    return ForwardIterator<ValueT>(new ListIteratorImpl<ValueT, KeyT>(this, this->list_head));
 }
 
 template<typename ValueT, typename KeyT>
 ForwardIterator<ValueT> DoublyLinkedListBase<ValueT, KeyT>::end()
 {
-	return ForwardIterator(new ListIteratorImpl<ValueT, KeyT>(this, nullptr));
+    return ForwardIterator<ValueT>(new ListIteratorImpl<ValueT, KeyT>(this, nullptr));
 }

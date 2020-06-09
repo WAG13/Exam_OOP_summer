@@ -3,17 +3,16 @@
 #include <iostream>
 #include <string>
 #include <functional>
-#include "Trees/SearchTree.h"
+#include "../Trees/SearchTree.h"
 #include "DoublyLinkedListBase.h"
 #include "ListNode.h"
 
 template <typename ValueT, typename KeyT>
-class DoublyLinkedList : public DoublyLinkedListBase<ValueT, KeyT> //linked list of DoublyListNode objects
+class DoublyCircularLinkedList : public DoublyLinkedListBase<ValueT, KeyT> //linked list of DoublyListNode objects
 {
 public:
-	DoublyLinkedList(KeyT(*myKeyGen)(ValueT));
-	~DoublyLinkedList() override;
-
+	DoublyCircularLinkedList(KeyT(*myKeyGen)(ValueT));
+	~DoublyCircularLinkedList() override;
 private:
 	void prepend(ValueT) override;										//inserts new node before the first node in the list
 	void prepend(ValueT, DoublyListNode<ValueT, KeyT>*) override;		//inserts new node before given node in the list
@@ -23,22 +22,22 @@ private:
 };
 
 template<typename ValueT>
-class DoublyLinkedListSimple : public DoublyLinkedList<ValueT, ValueT>
+class DoublyCircularLinkedListSimple : public DoublyCircularLinkedList<ValueT, ValueT>
 {
-	DoublyLinkedListSimple()
-		: DoublyLinkedList(lists::detail::getValueAsKey<ValueT>)
+	DoublyCircularLinkedListSimple()
+		: DoublyCircularLinkedList(lists::detail::getValueAsKey<ValueT>)
 	{}
 };
 
 template <typename ValueT, typename KeyT>
-DoublyLinkedList<ValueT, KeyT>::DoublyLinkedList(KeyT(*myKeyGen)(ValueT)) : DoublyLinkedListBase(myKeyGen)
+DoublyCircularLinkedList<ValueT, KeyT>::DoublyCircularLinkedList(KeyT(*myKeyGen)(ValueT)) : DoublyLinkedListBase(myKeyGen)
 {
 	list_head = nullptr;
 	list_tail = nullptr;
 }
 
 template <typename ValueT, typename KeyT>
-DoublyLinkedList<ValueT, KeyT>::~DoublyLinkedList()
+DoublyCircularLinkedList<ValueT, KeyT>::~DoublyCircularLinkedList()
 {
 	if (!list_head)
 	{
@@ -56,7 +55,7 @@ DoublyLinkedList<ValueT, KeyT>::~DoublyLinkedList()
 
 /* ADD */
 template <typename ValueT, typename KeyT>
-void DoublyLinkedList<ValueT, KeyT>::prepend(ValueT dataIn)
+void DoublyCircularLinkedList<ValueT, KeyT>::prepend(ValueT dataIn)
 {
 	DoublyListNode<ValueT, KeyT>* new_node = new DoublyListNode<ValueT, KeyT>(dataIn);
 
@@ -71,23 +70,23 @@ void DoublyLinkedList<ValueT, KeyT>::prepend(ValueT dataIn)
 }
 
 template <typename ValueT, typename KeyT>
-void DoublyLinkedList<ValueT, KeyT>::prepend(ValueT dataIn, DoublyListNode<ValueT, KeyT>* node)
+void DoublyCircularLinkedList<ValueT, KeyT>::prepend(ValueT dataIn, DoublyListNode<ValueT, KeyT>* node)
 {
 	if (!node) return;
 	if (node == list_head) prepend(dataIn);
 	else {
 		DoublyListNode<ValueT, KeyT>* new_node = new DoublyListNode<ValueT, KeyT>(dataIn);
-		
+
 		new_node->prev = node->prev;
 		node->prev = new_node;
 		new_node->next = node;
-		if (new_node->prev) 
+		if (new_node->prev)
 			node->prev->next = new_node;
 	}
 }
 
 template <typename ValueT, typename KeyT>
-void DoublyLinkedList<ValueT, KeyT>::append(ValueT dataIn)
+void DoublyCircularLinkedList<ValueT, KeyT>::append(ValueT dataIn)
 {
 	DoublyListNode<ValueT, KeyT>* new_node = new DoublyListNode<ValueT, KeyT>(dataIn);
 
@@ -103,7 +102,7 @@ void DoublyLinkedList<ValueT, KeyT>::append(ValueT dataIn)
 }
 
 template <typename ValueT, typename KeyT>
-void DoublyLinkedList<ValueT, KeyT>::append(ValueT dataIn, DoublyListNode<ValueT, KeyT>* node)
+void DoublyCircularLinkedList<ValueT, KeyT>::append(ValueT dataIn, DoublyListNode<ValueT, KeyT>* node)
 {
 	if (!node) return;
 	if (node == list_tail) append(dataIn);
@@ -119,7 +118,7 @@ void DoublyLinkedList<ValueT, KeyT>::append(ValueT dataIn, DoublyListNode<ValueT
 
 /* DELETE */
 template <typename ValueT, typename KeyT>
-void DoublyLinkedList<ValueT, KeyT>::deleteNode(DoublyListNode<ValueT, KeyT>* node) {
+void DoublyCircularLinkedList<ValueT, KeyT>::deleteNode(DoublyListNode<ValueT, KeyT>* node) {
 	if (node) {
 		if (node == list_head) {
 			list_head = node->next;
@@ -130,11 +129,12 @@ void DoublyLinkedList<ValueT, KeyT>::deleteNode(DoublyListNode<ValueT, KeyT>* no
 			node->prev->next = nullptr;
 		}
 		else {
-		if (node->next->prev)
-			node->next->prev = node->prev;
-		if (node->prev)
-			node->prev->next = node->next;
+			if (node->next->prev)
+				node->next->prev = node->prev;
+			if (node->prev)
+				node->prev->next = node->next;
 		}
 		delete node;
 	}
 }
+

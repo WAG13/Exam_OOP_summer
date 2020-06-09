@@ -18,7 +18,7 @@ class TreeTypeAVL : public TreeType<ValueT, KeyT>
 public:
 	lists::SearchTree<ValueT, KeyT>* createEmptyTree(lists::GetKeyFunc<ValueT, KeyT> getKey, lists::Comparator<KeyT> lessThan) override
 	{
-		return new lists::AVLTree(getKey, lessThan);
+        return new lists::AVLTree<ValueT, KeyT>(getKey, lessThan);
 	}
 };
 
@@ -32,7 +32,7 @@ public:
 	}
 	lists::SearchTree<ValueT, KeyT>* createEmptyTree(lists::GetKeyFunc<ValueT, KeyT> getKey, lists::Comparator<KeyT> lessThan) override
 	{
-		return new lists::BPlusTree(getKey, lessThan, this->t);
+        return new lists::BPlusTree<ValueT, KeyT>(getKey, lessThan, this->t);
 	}
 
 private:
