@@ -12,6 +12,7 @@
 #include "../Maps/TreeMap.h"
 #include "../Maps/StandardMap.h"
 #include "../Sets/TreeSet.h"
+#include "../Sets/VectorSet.h"
 #include "../Iterator.h"
 #include <memory>
 #include <vector>
@@ -331,6 +332,12 @@ TEST_CASE("Set")
 		std::unique_ptr<SetTreeType<int>> treeType(new SetTreeTypeBPlus<int>(2));
 		std::unique_ptr<Set<int>> treeSet(new TreeSet(treeType.get()));
 		testSet(treeSet.get());
+	}
+
+	SUBCASE("Vector Set")
+	{
+		std::unique_ptr<Set<int>> vectorSet(new VectorSet<int>());
+		testSet(vectorSet.get());
 	}
 
 	SUBCASE("Set Operations")
