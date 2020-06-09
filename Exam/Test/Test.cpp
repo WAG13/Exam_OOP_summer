@@ -5,7 +5,6 @@
 #include "../Data/DataGenerator.h"
 #include "../Lists/DoublyCircularLinkedList.h"
 #include "../Lists/DoublyLinkedList.h"
-#include "../Lists/LinkedList.h"
 #include "../HashTables/BucketHashTable.h"
 #include "../Trees/AVLTree.h"
 #include "../Trees/BPlusTree.h"
@@ -49,35 +48,6 @@ int foo(int element_value) { return (element_value + 10); };
 
 TEST_CASE("List")
 {
-
-
-    SUBCASE("Creating Linked List")
-    {
-        int size = 150;
-        LinkedList<int, int> linked_list(&foo);
-        for (int i = 0; i < size; i++)
-            linked_list.insertNewNode(i);
-
-        auto vector_linked_list = linked_list.toVector();
-        for (int i = 0; i < size; i++) {
-            REQUIRE(vector_linked_list[i].first == i);
-            REQUIRE(vector_linked_list[i].first + 10 == vector_linked_list[i].second);
-        }
-
-        REQUIRE(linked_list.searchByKey(5));
-        linked_list.deleteByKey(5);
-        REQUIRE(!linked_list.searchByKey(5));
-        linked_list.deleteByKey(-5);
-        REQUIRE(!linked_list.searchByKey(-5));
-
-        REQUIRE(linked_list.searchByValue(15));
-        linked_list.deleteByValue(15);
-        REQUIRE(!linked_list.searchByValue(15));
-        linked_list.deleteByValue(-15);
-        REQUIRE(!linked_list.searchByValue(-15));
-
-    }
-
     SUBCASE("Creating Doubly Linked List")
     {
         int size = 150;
@@ -91,11 +61,9 @@ TEST_CASE("List")
             REQUIRE(vector_linked_list[i].first + 10 == vector_linked_list[i].second);
         }
 
-        REQUIRE(linked_list.searchByKey(5));
-        linked_list.deleteByKey(5);
         REQUIRE(!linked_list.searchByKey(5));
-        linked_list.deleteByKey(-5);
-        REQUIRE(!linked_list.searchByKey(-5));
+        linked_list.deleteByKey(15);
+        REQUIRE(!linked_list.searchByValue(5));
 
         REQUIRE(linked_list.searchByValue(15));
         linked_list.deleteByValue(15);
@@ -117,9 +85,9 @@ TEST_CASE("List")
             REQUIRE(vector_linked_list[i].first + 10 == vector_linked_list[i].second);
         }
 
-        REQUIRE(linked_list.searchByKey(5));
-        linked_list.deleteByKey(5);
         REQUIRE(!linked_list.searchByKey(5));
+        linked_list.deleteByKey(15);
+        REQUIRE(!linked_list.searchByValue(5));
         linked_list.deleteByKey(-5);
         REQUIRE(!linked_list.searchByKey(-5));
 

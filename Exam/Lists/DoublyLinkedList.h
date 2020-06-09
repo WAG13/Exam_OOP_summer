@@ -3,15 +3,16 @@
 #include <iostream>
 #include <string>
 #include <functional>
-#include "List.h"
+#include "DoublyLinkedListBase.h"
 #include "ListNode.h"
 
 template <typename ValueT, typename KeyT>
-class DoublyLinkedList : public List<DoublyListNode<ValueT, KeyT>, ValueT, KeyT> //linked list of DoublyListNode objects
+class DoublyLinkedList : public DoublyLinkedListBase<ValueT, KeyT> //linked list of DoublyListNode objects
 {
 public:
 	DoublyLinkedList(KeyT(*myKeyGen)(ValueT) = NULL);
-	~DoublyLinkedList() override;									
+	~DoublyLinkedList() override;
+
 private:
 	void prepend(ValueT) override;										//inserts new node before the first node in the list
 	void prepend(ValueT, DoublyListNode<ValueT, KeyT>*) override;		//inserts new node before given node in the list
@@ -21,7 +22,7 @@ private:
 };
 
 template <typename ValueT, typename KeyT>
-DoublyLinkedList<ValueT, KeyT>::DoublyLinkedList(KeyT(*myKeyGen)(ValueT)) : List(myKeyGen)
+DoublyLinkedList<ValueT, KeyT>::DoublyLinkedList(KeyT(*myKeyGen)(ValueT)) : DoublyLinkedListBase(myKeyGen)
 {
 	list_head = nullptr;
 	list_tail = nullptr;
@@ -128,4 +129,3 @@ void DoublyLinkedList<ValueT, KeyT>::deleteNode(DoublyListNode<ValueT, KeyT>* no
 		delete node;
 	}
 }
-

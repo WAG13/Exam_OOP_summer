@@ -3,11 +3,11 @@
 #include <iostream>
 #include <string>
 #include <functional>
-#include "List.h"
+#include "DoublyLinkedListBase.h"
 #include "ListNode.h"
 
 template <typename ValueT, typename KeyT>
-class DoublyCircularLinkedList : public List<DoublyListNode<ValueT, KeyT>, ValueT, KeyT> //linked list of DoublyListNode objects
+class DoublyCircularLinkedList : public DoublyLinkedListBase<ValueT, KeyT> //linked list of DoublyListNode objects
 {
 public:
 	DoublyCircularLinkedList(KeyT(*myKeyGen)(ValueT) = NULL);
@@ -21,7 +21,7 @@ private:
 };
 
 template <typename ValueT, typename KeyT>
-DoublyCircularLinkedList<ValueT, KeyT>::DoublyCircularLinkedList(KeyT(*myKeyGen)(ValueT)) : List(myKeyGen)
+DoublyCircularLinkedList<ValueT, KeyT>::DoublyCircularLinkedList(KeyT(*myKeyGen)(ValueT)) : DoublyLinkedListBase(myKeyGen)
 {
 	list_head = nullptr;
 	list_tail = nullptr;
