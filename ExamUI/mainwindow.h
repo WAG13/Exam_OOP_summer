@@ -15,6 +15,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void on_KVReal_2_currentIndexChanged(int index);
+
 private:
     Ui::MainWindow *ui;
 };
