@@ -26,22 +26,22 @@ public:
 	void deleteByValue(ValueT);									//delete value in the list that contains that value
 	void deleteByKey(KeyT);										//delete value in the list that contains that key
 	std::vector<std::pair<KeyT, ValueT>> toVector() const;		//converts list to vector of pairs that contains that key and value
-
+	
+	virtual void prepend(ValueT) = 0;							//inserts new node before the first node in the list
+	virtual void append(ValueT) = 0;							//inserts new node after the last node in the list
 	ForwardIterator<ValueT> begin();
 	ForwardIterator<ValueT> end();
 
 protected:
 	friend ListIteratorImpl<ValueT, KeyT>;
 
-	DoublyListNode<ValueT, KeyT>* list_head;											//stores the pointer of first object in the list
-	DoublyListNode<ValueT, KeyT>* list_tail;											//stored the pointer of the last object in the list
+	DoublyListNode<ValueT, KeyT>* list_head;					//stores the pointer of first object in the list
+	DoublyListNode<ValueT, KeyT>* list_tail;					//stored the pointer of the last object in the list
 	KeyT(*keyGen)(ValueT);
 	bool compare(ValueT data1, ValueT data2);
 
-	DoublyListNode<ValueT, KeyT>* findNearest(ValueT dataIn);							//returns nearest smallest node witch value is < dataIn
-	virtual void prepend(ValueT) = 0;							//inserts new node before the first node in the list
-	virtual void prepend(ValueT, DoublyListNode<ValueT, KeyT>*) = 0;					//inserts new node before given node in the list
-	virtual void append(ValueT) = 0;							//inserts new node after the last node in the list
+	DoublyListNode<ValueT, KeyT>* findNearest(ValueT dataIn);						//returns nearest smallest node witch value is < dataIn
+	virtual void prepend(ValueT, DoublyListNode<ValueT, KeyT>*) = 0;				//inserts new node before given node in the list
 	virtual void append(ValueT, DoublyListNode<ValueT, KeyT>*) = 0;					//inserts new node after given node in the list
 	virtual void deleteNode(DoublyListNode<ValueT, KeyT>*) = 0;						//inserts new node after given node in the list
 };

@@ -13,11 +13,10 @@ class DoublyLinkedList : public DoublyLinkedListBase<ValueT, KeyT> //linked list
 public:
 	DoublyLinkedList(KeyT(*myKeyGen)(ValueT));
 	~DoublyLinkedList() override;
-
-private:
 	void prepend(ValueT) override;										//inserts new node before the first node in the list
-	void prepend(ValueT, DoublyListNode<ValueT, KeyT>*) override;		//inserts new node before given node in the list
 	void append(ValueT) override;										//inserts new node after the last node in the list
+private:
+	void prepend(ValueT, DoublyListNode<ValueT, KeyT>*) override;		//inserts new node before given node in the list
 	void append(ValueT, DoublyListNode<ValueT, KeyT>*) override;		//inserts new node after given node in the list
 	void deleteNode(DoublyListNode<ValueT, KeyT>*) override;			//inserts new node after given node in the list
 };
