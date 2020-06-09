@@ -1,0 +1,1183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1000</width>
+    <height>700</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">*{
+	
+	font: 10pt &quot;Arial&quot;;
+	color: rgb(240, 240, 240);
+	background-color: rgb(90, 80, 80)
+}
+
+/*BUTTON*/
+QPushButton{
+	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(255, 166, 0, 255), stop:1 rgba(255, 85, 0, 255));
+border-radius:5px;
+padding: 5px 15px;
+font-weight:bold;
+max-width:200px;
+}
+QPushButton:hover {
+	background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(255, 200, 96, 255), stop:1 rgba(255, 128, 65, 255));
+}
+QPushButton:pressed,
+QPushButton:disabled{
+	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(235, 146, 0, 160), stop:1 rgba(235, 65, 0, 180));
+}
+
+/*COMBOBOX*/
+QComboBox {
+	color: rgb(39, 39, 39);
+    border-radius: 3px;
+    padding: 1px 18px 1px 3px;
+    min-width: 6em;
+}
+QComboBox:editable {
+    background: white;
+}
+QComboBox:!editable, QComboBox::drop-down:editable {
+     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
+                                 stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
+}
+QComboBox:!editable:on, QComboBox::drop-down:editable:on {
+    background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                stop: 0 #D3D3D3, stop: 0.4 #D8D8D8,
+                                stop: 0.5 #DDDDDD, stop: 1.0 #E1E1E1);
+}
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 25px;
+border-top-right-radius:3px;
+border-bottom-right-radius:3px;
+	background-color:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(255, 166, 0, 255), stop:1 rgba(255, 85, 0, 255));
+}
+
+QComboBox::drop-down:hover {
+	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(255, 200, 96, 255), stop:1 rgba(255, 128, 65, 255));
+}
+
+
+/*NUMBER PICKER*/
+QSpinBox, QDateTimeEdit {
+	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(255, 166, 0, 50), stop:1 rgba(255, 85, 0, 150));
+border-radius:3px;
+max-width:230px;
+}
+QSpinBox::up-button,QDateTimeEdit::up-button {
+	background-color: qlineargradient(spread:pad, x1:0.507, y1:0, x2:0.532, y2:1, stop:0 rgba(255, 166, 0, 255), stop:1 rgba(255, 123, 0, 255));
+}
+QSpinBox::down-button,QDateTimeEdit::down-button {
+	background-color: qlineargradient(spread:pad, x1:0.507, y1:0, x2:0.532, y2:1, stop:0 rgba(255, 123, 0, 255), stop:1 rgba(255, 85, 0, 255));
+}
+QDateTimeEdit::up-button:hover, QDateTimeEdit::down-button:hover,
+QSpinBox::up-button:hover, QSpinBox::down-button:hover {
+	background-color: rgb(255, 170, 85);
+}
+QDateTimeEdit::up-button:pressed,QDateTimeEdit::down-button:pressed,
+QSpinBox::up-button:pressed,QSpinBox::down-button:pressed {
+	background-color: rgb(200, 100, 0);
+}
+
+
+/*TABS*/
+QTabWidget::pane { /* The tab widget frame */
+    border-top: 2px solid rgb(255, 108, 0);
+}
+QTabWidget::tab-bar {
+    left: 5px; /* move to the right by 5px */
+}
+QTabBar::tab {
+	color: rgb(39, 39, 39);
+    background: qlineargradient(spread:pad, x1:0.531925, y1:0.807, x2:0.523, y2:0, stop:0 rgba(187, 187, 187, 255), stop:1 rgba(232, 232, 232, 255)); 
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    padding: 2px 15px;
+margin-right:5px;
+	border:1px solid rgb(90, 80, 80);
+	border-bottom-color: rgb(255, 108, 0); /* same as the pane color */
+}
+QTabBar::tab:selected {
+	color: rgb(240, 240, 240);
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(255, 166, 0, 255), stop:1 rgba(255, 85, 0, 255))
+}
+QTabBar::tab:hover {
+	color: rgb(240, 240, 240);
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(255, 200, 96, 255), stop:1 rgba(255, 128, 65, 255));
+}
+/*SCROLL BAR*/
+QScrollBar:vertical {
+     border: none;
+     background: rgb(70, 62, 62);
+     width: 10px;
+     margin: 20px 0;
+ }
+
+ QScrollBar::handle:verticall {
+     background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(255, 170, 0, 255), stop:1 rgba(255, 85, 0, 255));
+border-radius:3px;
+     min-height: 20px;
+ }
+
+ QScrollBar::add-line:vertical {
+     background: qlineargradient(spread:pad, x1:0.701781, y1:1, x2:0.298, y2:0.0113636, stop:0.00497512 rgba(213, 213, 213, 255), stop:1 rgba(224, 224, 224, 255));
+	border-radius:3px;
+     height: 20px;
+     subcontrol-position: bottom;
+     subcontrol-origin: margin;
+ }
+
+ QScrollBar::sub-line:vertical {
+     background: qlineargradient(spread:pad, x1:0.701781, y1:1, x2:0.298, y2:0.0113636, stop:0.00497512 rgba(213, 213, 213, 255), stop:1 rgba(224, 224, 224, 255));
+	border-radius:3px;
+     height: 20px;
+     subcontrol-position: top;
+     subcontrol-origin: margin;
+ }
+
+/*hor*/
+
+QScrollBar:horizontal {
+     border: none;
+     background: rgb(70, 62, 62);
+     height: 10px;
+     margin: 0 20px;
+ }
+
+ QScrollBar::handle:horizontal {
+     background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(255, 170, 0, 255), stop:1 rgba(255, 85, 0, 255));
+border-radius:3px;
+     min-width: 20px;
+ }
+
+ QScrollBar::add-line:horizontal {
+     background: qlineargradient(spread:pad, x1:0.701781, y1:1, x2:0.298, y2:0.0113636, stop:0.00497512 rgba(213, 213, 213, 255), stop:1 rgba(224, 224, 224, 255));
+	border-radius:3px;
+     width: 20px;
+     subcontrol-position: right;
+     subcontrol-origin: margin;
+ }
+
+ QScrollBar::sub-line:horizontal {
+     background: qlineargradient(spread:pad, x1:0.701781, y1:1, x2:0.298, y2:0.0113636, stop:0.00497512 rgba(213, 213, 213, 255), stop:1 rgba(224, 224, 224, 255));
+	border-radius:3px;
+     width: 20px;
+     subcontrol-position: left;
+     subcontrol-origin: margin;
+ }
+
+ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical,
+QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
+     background: none;
+ }
+
+/* List */
+QListView {
+    show-decoration-selected: 1; /* make the selection span the entire width of the view */
+}
+
+QListView::item {
+    background: rgb(86, 76, 76);
+margin-bottom: 2px;
+}
+
+QListView::item:hover {
+    background: rgba(10, 0, 0,0.1);
+}
+
+QListView::item:selected {
+    border: 1px solid rgb(240, 240, 240);;
+    background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(255, 166, 0, 240), stop:1 rgba(255, 85, 0, 240));
+}
+</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>Контейнер «ключ-значення»</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
+           <widget class="QGroupBox" name="groupBox_2">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>200</height>
+             </size>
+            </property>
+            <property name="title">
+             <string>Дані</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_5">
+             <item>
+              <layout class="QFormLayout" name="formLayout_2">
+               <property name="labelAlignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+               <item row="0" column="0" colspan="2">
+                <widget class="QComboBox" name="KVReal_2">
+                 <item>
+                  <property name="text">
+                   <string>випадкові дані</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>ввести вручну</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>зчитати з файлу</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_10">
+                 <property name="text">
+                  <string>Кількість:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QSpinBox" name="spinBox">
+                 <property name="minimum">
+                  <number>1</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QPushButton" name="pushButton_4">
+                 <property name="text">
+                  <string>Згенерувати</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_11">
+                 <property name="text">
+                  <string>Значення:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QDateTimeEdit" name="dateTimeEdit_2">
+                 <property name="displayFormat">
+                  <string>dd.MM.yyyy hh:mm:ss</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QPushButton" name="pushButton_2">
+                 <property name="text">
+                  <string>Додати</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QLabel" name="label_9">
+              <property name="text">
+               <string>База:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QColumnView" name="columnView"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox1">
+          <property name="maximumSize">
+           <size>
+            <width>400</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Налаштування</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <layout class="QFormLayout" name="formLayout">
+             <property name="labelAlignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string>Реалізація:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QComboBox" name="KVReal">
+               <item>
+                <property name="text">
+                 <string>хеш-таблиця</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>збалансоване дерево пошуку</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>впорядкований список</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_5">
+               <property name="text">
+                <string>Тип ключа:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QComboBox" name="KVKeytype">
+               <item>
+                <property name="text">
+                 <string>int</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>DateTime</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>year</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>month</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>day</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>hour</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>minute</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>second</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Операції</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QComboBox" name="KVOperations">
+               <item>
+                <property name="text">
+                 <string>отримання значення за ключем</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>зміни значення за ключем</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>додавання значення за ключем</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>видалення значення за ключем</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>отримання списку всіх ключів</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>отримання списку всіх значень</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>отримання списку всіх пар ключ-значення</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_6">
+               <property name="text">
+                <string>Ключ:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <layout class="QVBoxLayout" name="verticalLayout">
+               <item>
+                <widget class="QSpinBox" name="KVKeyInt"/>
+               </item>
+               <item>
+                <widget class="QDateTimeEdit" name="KVKeyDate">
+                 <property name="displayFormat">
+                  <string>dd.MM.yyyy hh:mm:ss</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="label_7">
+               <property name="text">
+                <string>Значення:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QDateTimeEdit" name="dateTimeEdit">
+               <property name="displayFormat">
+                <string>dd.MM.yyyy hh:mm:ss</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="1">
+              <widget class="QPushButton" name="pushButton">
+               <property name="text">
+                <string>Виконати</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0" colspan="2">
+              <layout class="QVBoxLayout" name="verticalLayout_4">
+               <item>
+                <widget class="QLabel" name="label_8">
+                 <property name="text">
+                  <string>Результат:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPlainTextEdit" name="plainTextEdit_2">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_2">
+       <attribute name="title">
+        <string>Множина</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_11">
+          <item>
+           <widget class="QGroupBox" name="groupBox_3">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>250</height>
+             </size>
+            </property>
+            <property name="title">
+             <string>Дані</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_6">
+             <item>
+              <layout class="QFormLayout" name="formLayout_4">
+               <property name="labelAlignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+               <item row="0" column="0" colspan="2">
+                <widget class="QComboBox" name="KVReal_4">
+                 <item>
+                  <property name="text">
+                   <string>випадкові дані</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>ввести вручну</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>зчитати з файлу</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_17">
+                 <property name="text">
+                  <string>Кількість елементів множини А:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QSpinBox" name="spinBox_2"/>
+               </item>
+               <item row="2" column="0">
+                <widget class="QLabel" name="label_21">
+                 <property name="text">
+                  <string>Кількість елементів множини В:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QSpinBox" name="spinBox_3"/>
+               </item>
+               <item row="3" column="1">
+                <widget class="QPushButton" name="pushButton_6">
+                 <property name="text">
+                  <string>Згенерувати</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="0">
+                <widget class="QLabel" name="label">
+                 <property name="text">
+                  <string>Додати до</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QComboBox" name="KVReal_5">
+                 <item>
+                  <property name="text">
+                   <string>множини А</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>множини В</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QLabel" name="label_18">
+                 <property name="text">
+                  <string>Значення:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="5" column="1">
+                <widget class="QDateTimeEdit" name="dateTimeEdit_4">
+                 <property name="displayFormat">
+                  <string>dd.MM.yyyy hh:mm:ss</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="1">
+                <widget class="QPushButton" name="pushButton_5">
+                 <property name="text">
+                  <string>Додати</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_12">
+              <item>
+               <widget class="QLabel" name="label_19">
+                <property name="text">
+                 <string>Множина А:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QColumnView" name="columnView_2"/>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_13">
+              <item>
+               <widget class="QLabel" name="label_20">
+                <property name="text">
+                 <string>Множина В:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QColumnView" name="columnView_3"/>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox1_2">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>400</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Налаштування</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_8">
+           <item>
+            <layout class="QFormLayout" name="formLayout_3">
+             <property name="labelAlignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_12">
+               <property name="text">
+                <string>Реалізація:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QComboBox" name="KVReal_3">
+               <item>
+                <property name="text">
+                 <string>хеш-таблиця</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>збалансоване дерево пошуку</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>впорядкований список</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="1" column="0" colspan="2">
+              <widget class="QLabel" name="label_13">
+               <property name="text">
+                <string>Операції у множинах:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" colspan="2">
+              <widget class="QComboBox" name="KVOperations_2">
+               <item>
+                <property name="text">
+                 <string>перевірки належності елемента множині</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>додати елемент</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>вилучити елемент</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_14">
+               <property name="text">
+                <string>Ключ:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <layout class="QVBoxLayout" name="verticalLayout_9">
+               <item>
+                <widget class="QSpinBox" name="KVKeyInt_2"/>
+               </item>
+               <item>
+                <widget class="QDateTimeEdit" name="KVKeyDate_2">
+                 <property name="displayFormat">
+                  <string>dd.MM.yyyy hh:mm:ss</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="label_15">
+               <property name="text">
+                <string>Значення:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QDateTimeEdit" name="dateTimeEdit_3">
+               <property name="displayFormat">
+                <string>dd.MM.yyyy hh:mm:ss</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0" colspan="2">
+              <widget class="QLabel" name="label_22">
+               <property name="text">
+                <string>Операції над множинами:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0" colspan="2">
+              <widget class="QComboBox" name="KVOperations_3">
+               <item>
+                <property name="text">
+                 <string>об’єднання  (A U B)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>перетин  (A ^ B)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>різниця  (A / B)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>симетрична різниця (A Δ B)</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="8" column="0" colspan="2">
+              <layout class="QVBoxLayout" name="verticalLayout_10">
+               <item>
+                <widget class="QLabel" name="label_16">
+                 <property name="text">
+                  <string>Результат:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPlainTextEdit" name="plainTextEdit_3">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="7" column="1">
+              <widget class="QPushButton" name="pushButton_3">
+               <property name="text">
+                <string>Виконати</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_3">
+       <attribute name="title">
+        <string>Сортування</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_14">
+          <item>
+           <widget class="QGroupBox" name="groupBox_4">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>200</height>
+             </size>
+            </property>
+            <property name="title">
+             <string>Дані</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_15">
+             <item>
+              <layout class="QFormLayout" name="formLayout_5">
+               <property name="labelAlignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+               <item row="0" column="0" colspan="2">
+                <widget class="QComboBox" name="KVReal_6">
+                 <item>
+                  <property name="text">
+                   <string>випадкові дані</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>ввести вручну</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>зчитати з файлу</string>
+                  </property>
+                 </item>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="QLabel" name="label_23">
+                 <property name="text">
+                  <string>Кількість:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="1">
+                <widget class="QSpinBox" name="spinBox_4">
+                 <property name="minimum">
+                  <number>1</number>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QPushButton" name="pushButton_8">
+                 <property name="text">
+                  <string>Згенерувати</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="0">
+                <widget class="QLabel" name="label_24">
+                 <property name="text">
+                  <string>Значення:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="3" column="1">
+                <widget class="QDateTimeEdit" name="dateTimeEdit_5">
+                 <property name="displayFormat">
+                  <string>dd.MM.yyyy hh:mm:ss</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="4" column="1">
+                <widget class="QPushButton" name="pushButton_7">
+                 <property name="text">
+                  <string>Додати</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_16">
+            <item>
+             <widget class="QLabel" name="label_25">
+              <property name="text">
+               <string>База:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QColumnView" name="columnView_4"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox1_3">
+          <property name="maximumSize">
+           <size>
+            <width>400</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Налаштування</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_17">
+           <item>
+            <layout class="QFormLayout" name="formLayout_6">
+             <property name="labelAlignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_26">
+               <property name="text">
+                <string>Реалізація:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QComboBox" name="KVReal_7">
+               <item>
+                <property name="text">
+                 <string>збалансоване дерево пошуку</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>впорядкований список</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_3">
+               <property name="text">
+                <string>Операції:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QComboBox" name="KVOperations_4">
+               <item>
+                <property name="text">
+                 <string>додавання елемента до контейнера</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>сортування контейнера за заданим критерієм</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>отримання заданої кількості елементів з кінця</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>отримання заданої кількості елементів з початку</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>отримання заданої кількості елементів з середини</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>отримання заданої кількості елементів з заданої позиції</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_28">
+               <property name="text">
+                <string>Значення:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QDateTimeEdit" name="dateTimeEdit_6">
+               <property name="displayFormat">
+                <string>dd.MM.yyyy hh:mm:ss</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_30">
+               <property name="text">
+                <string>Критерій:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QComboBox" name="KVKeytype_2">
+               <item>
+                <property name="text">
+                 <string>ключ</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>DateTime</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>year</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>month</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>day</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>hour</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>minute</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>second</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="label_27">
+               <property name="text">
+                <string>Позиція:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <layout class="QVBoxLayout" name="verticalLayout_18">
+               <item>
+                <widget class="QSpinBox" name="KVKeyInt_3"/>
+               </item>
+              </layout>
+             </item>
+             <item row="6" column="0" colspan="2">
+              <layout class="QVBoxLayout" name="verticalLayout_19">
+               <item>
+                <widget class="QLabel" name="label_29">
+                 <property name="text">
+                  <string>Результат:</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPlainTextEdit" name="plainTextEdit_4">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item row="5" column="1">
+              <widget class="QPushButton" name="pushButton_9">
+               <property name="text">
+                <string>Виконати</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="action">
+   <property name="text">
+    <string>Рандом</string>
+   </property>
+  </action>
+  <action name="action_2">
+   <property name="text">
+    <string>Своя</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
