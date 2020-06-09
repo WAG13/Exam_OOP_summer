@@ -59,8 +59,8 @@ TEST_CASE("List")
 
         auto vector_linked_list = linked_list.toVector();
         for (int i = 0; i < size; i++) {
-            REQUIRE(vector_linked_list[i].first == i);
-            REQUIRE(vector_linked_list[i].first + 10 == vector_linked_list[i].second);
+            REQUIRE(vector_linked_list[i].second == i);
+            REQUIRE(vector_linked_list[i].second + 10 == vector_linked_list[i].first);
         }
 
         REQUIRE(!linked_list.searchByKey(5));
@@ -83,8 +83,8 @@ TEST_CASE("List")
 
         auto vector_linked_list = linked_list.toVector();
         for (int i = 0; i < size; i++) {
-            REQUIRE(vector_linked_list[i].first == i);
-            REQUIRE(vector_linked_list[i].first + 10 == vector_linked_list[i].second);
+			REQUIRE(vector_linked_list[i].second == i);
+			REQUIRE(vector_linked_list[i].second + 10 == vector_linked_list[i].first);
         }
 
         REQUIRE(!linked_list.searchByKey(5));
