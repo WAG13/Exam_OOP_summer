@@ -3,7 +3,8 @@
 
 #include <vector>
 #include <utility>
-#include <unordered_map>
+#include <map>
+#include "Map.h"
 
 template<typename ValueT, typename KeyT>
 class StandardMap : public Map<ValueT, KeyT>
@@ -25,7 +26,7 @@ public:
 	std::vector<std::pair<KeyT, ValueT>> getKVPs() const override;
 
 private:
-	std::unordered_map<KeyT, ValueT> map;
+    std::map<KeyT, ValueT> map;
 };
 
 template<typename ValueT, typename KeyT>
@@ -37,7 +38,7 @@ ValueT StandardMap<ValueT, KeyT>::get(const KeyT& key) const
 template<typename ValueT, typename KeyT>
 bool StandardMap<ValueT, KeyT>::contains(const KeyT& key) const
 {
-	return map.contains(key);
+    return map.find(key) != map.end();
 }
 
 template<typename ValueT, typename KeyT>

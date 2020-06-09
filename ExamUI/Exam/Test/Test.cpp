@@ -5,12 +5,13 @@
 #include "../Data/DataGenerator.h"
 #include "../Lists/DoublyCircularLinkedList.h"
 #include "../Lists/DoublyLinkedList.h"
-#include "../Lists/LinkedList.h"
 #include "../HashTables/BucketHashTable.h"
+#include "../HashTables/CoalescedHashTable.h"
 #include "../Trees/AVLTree.h"
 #include "../Trees/BPlusTree.h"
 #include "../Maps/TreeMap.h"
 #include "../Maps/StandardMap.h"
+#include "../Maps/ListMap.h"
 #include "../Sets/TreeSet.h"
 #include "../Sets/VectorSet.h"
 #include "../Iterator.h"
@@ -22,19 +23,19 @@ TEST_CASE("Data")
     SUBCASE("Creating data")
     {
         DateTime date1(1800, 12, 1, 0, 15, 0);
-        REQUIRE(date1.getDateTime() == "01.12.1800 00:15:00");
+        REQUIRE(date1.toString() == "01.12.1800 00:15:00");
         DateTime date2(2015, 14, 18, 12, 65, 8);
-        REQUIRE(date2.getDateTime() == "18.02.2016 13:05:08");
+        REQUIRE(date2.toString() == "18.02.2016 13:05:08");
         DateTime date3(2015, 12, 31, 25, 65, 8);
-        REQUIRE(date3.getDateTime() == "01.01.2016 02:05:08");
+        REQUIRE(date3.toString() == "01.01.2016 02:05:08");
 
     }
     SUBCASE("Creating random data")
     {
         DateTime min_date(1800, 1, 1, 0, 0, 0);
-        REQUIRE(min_date.getDateTime() == "01.01.1800 00:00:00");
+        REQUIRE(min_date.toString() == "01.01.1800 00:00:00");
         DateTime max_date(2500, 1, 1, 0, 0, 0);
-        REQUIRE(max_date.getDateTime() == "01.01.2500 00:00:00");
+        REQUIRE(max_date.toString() == "01.01.2500 00:00:00");
         DataGenerator<DateTime>* dataGen = new RandomDataGenerator<DateTime>();
         vector<DateTime> random = dataGen->generateVector(min_date, max_date, 150);
         REQUIRE(random.size() == 150);
@@ -49,34 +50,6 @@ int foo(int element_value) { return (element_value + 10); };
 
 TEST_CASE("List")
 {
-
-    SUBCASE("Creating Linked List")
-    {
-        int size = 150;
-        LinkedList<int, int> linked_list(&foo);
-        for (int i = 0; i < size; i++)
-            linked_list.insertNewNode(i);
-
-        auto vector_linked_list = linked_list.toVector();
-        for (int i = 0; i < size; i++) {
-            REQUIRE(vector_linked_list[i].first == i);
-            REQUIRE(vector_linked_list[i].first + 10 == vector_linked_list[i].second);
-        }
-
-        REQUIRE(linked_list.searchByKey(15));
-        linked_list.deleteByKey(15);
-        REQUIRE(!linked_list.searchByKey(15));
-        linked_list.deleteByKey(-5);
-        REQUIRE(!linked_list.searchByKey(-5));
-
-        REQUIRE(linked_list.searchByValue(15));
-        linked_list.deleteByValue(15);
-        REQUIRE(!linked_list.searchByValue(15));
-        linked_list.deleteByValue(-15);
-        REQUIRE(!linked_list.searchByValue(-15));
-
-    }
-
     SUBCASE("Creating Doubly Linked List")
     {
         int size = 150;
@@ -90,11 +63,9 @@ TEST_CASE("List")
             REQUIRE(vector_linked_list[i].first + 10 == vector_linked_list[i].second);
         }
 
-        REQUIRE(linked_list.searchByKey(15));
+        REQUIRE(!linked_list.searchByKey(5));
         linked_list.deleteByKey(15);
-        REQUIRE(!linked_list.searchByKey(15));
-        linked_list.deleteByKey(-5);
-        REQUIRE(!linked_list.searchByKey(-5));
+        REQUIRE(!linked_list.searchByValue(5));
 
         REQUIRE(linked_list.searchByValue(15));
         linked_list.deleteByValue(15);
@@ -116,9 +87,9 @@ TEST_CASE("List")
             REQUIRE(vector_linked_list[i].first + 10 == vector_linked_list[i].second);
         }
 
-        REQUIRE(linked_list.searchByKey(15));
+        REQUIRE(!linked_list.searchByKey(5));
         linked_list.deleteByKey(15);
-        REQUIRE(!linked_list.searchByKey(15));
+        REQUIRE(!linked_list.searchByValue(5));
         linked_list.deleteByKey(-5);
         REQUIRE(!linked_list.searchByKey(-5));
 
@@ -171,6 +142,26 @@ TEST_CASE("Hash")
 
     SUBCASE("Coalesced hashing")
     {
+		auto hash = new CoalescedHashTable<int, int>{ [](int const& v, size_t bucket_count) { return size_t(v) % bucket_count; }, 7 };
+		REQUIRE(hash->capacity() == 7);
+
+		hash->insert(2, 13);
+		hash->insert(2, 15);
+		hash->insert(1, 2);
+		hash->insert(14, 5);
+
+		REQUIRE(hash->find(14) == std::vector{ 5 });
+		REQUIRE(hash->find(1) == std::vector{ 2 });
+		REQUIRE(hash->find(2) == std::vector{ 13, 15 });
+		REQUIRE(hash->find(3) == std::vector<int>{});
+		REQUIRE(hash->find(6) == std::vector<int>{});
+
+		//items that are placed to a full cell then go to the first free cell and are placed there (and are added to the corresponding list)
+		REQUIRE(hash->getAllItems() == std::vector<std::pair<int, int>>{ { 2, 15 }, { 1, 2 }, { 2, 13 }, { 14, 5 } });
+
+		//the table rehashes
+		hash->remove(2, 13);
+		REQUIRE(hash->getAllItems() == std::vector<std::pair<int, int>>{ { 14, 5 }, { 1, 2 }, { 2, 15 } });
     }
 
     SUBCASE("Hopscotch hashing")
@@ -294,6 +285,20 @@ TEST_CASE("Map")
 	{
 		std::unique_ptr<Map<std::string, int>> treeMap(new StandardMap<std::string, int>());
 		testMap(treeMap.get());
+	}
+
+	SUBCASE("Doubly Linked List Map")
+	{
+		std::unique_ptr<MapListType<std::string, int>> listType(new MapListTypeDouble<std::string, int>());
+		std::unique_ptr<Map<std::string, int>> listMap(new ListMap(listType.get()));
+		testMap(listMap.get());
+	}
+
+	SUBCASE("Doubly Linked Circular List Map")
+	{
+		std::unique_ptr<MapListType<std::string, int>> listType(new MapListTypeDoubleCircular<std::string, int>());
+		std::unique_ptr<Map<std::string, int>> listMap(new ListMap(listType.get()));
+		testMap(listMap.get());
 	}
 }
 

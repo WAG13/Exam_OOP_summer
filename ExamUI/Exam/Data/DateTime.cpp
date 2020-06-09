@@ -32,7 +32,7 @@ std::string DateTime::getTime() const {
     return result; return result;
 }
 
-std::string DateTime::getDateTime() const { return getDate() + " " + getTime(); }
+std::string DateTime::toString() const { return getDate() + " " + getTime(); }
 
 bool DateTime::operator==(const DateTime& date2)const {
     if (year != date2.getYear())
