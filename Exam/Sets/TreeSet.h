@@ -4,6 +4,7 @@
 #include "Set.h"
 #include <vector>
 #include <utility>
+#include <memory>
 
 #include "../Trees/SearchTree.h"
 #include "../Trees/TreeTypes.h"
@@ -37,22 +38,29 @@ public:
 	bool contains(const T& element) override;
 
 	ForwardIterator<T> begin() override;
+	ForwardIterator<T> end() override;
 
 	//TODO: set operatrions (merge, diff, ...)
 
 private:
-	lists::SearchTreeSimple<T>* tree;
+	std::unique_ptr<lists::SearchTreeSimple<T>> tree;
 
 	struct TreeSetIteratorImpl : public ForwardIteratorImpl<T>
 	{
 		//extremely hacky but quick implementation
 		std::vector<T> values;
 		size_t currentIndex = 0;
+		bool isNull = false;
 		TreeSetIteratorImpl(lists::SearchTreeSimple<T>* tree)
 		{
-			tree->forEach([&](const T& value) {
-				values.push_back(value);
-			});
+			if (!tree) {
+				isNull = true;
+			}
+			else {
+				tree->forEach([&](const T& value) {
+					values.push_back(value);
+				});
+			}
 		}
 
 		void increment() override
@@ -60,9 +68,9 @@ private:
 			currentIndex++;
 		}
 
-		bool isEnd() override
+		bool isEnd() const override
 		{
-			return currentIndex >= values.size();
+			return isNull || currentIndex >= values.size();
 		}
 
 		T& getRef() override
@@ -73,19 +81,32 @@ private:
 		{
 			return &values[currentIndex];
 		}
+		const T& getRef() const override
+		{
+			return values[currentIndex];
+		}
+		const T* getPtr() const override
+		{
+			return &values[currentIndex];
+		}
 	};
 };
 
 template<typename T>
 TreeSet<T>::TreeSet(SetTreeType<T>* type)
-{
-	tree = type->createEmptyTree(lists::detail::getValueAsKey<T>, lists::detail::lessThan<T>);
-}
+	: tree(type->createEmptyTree(lists::detail::getValueAsKey<T>, lists::detail::lessThan<T>))
+{}
 
 template<typename T>
 ForwardIterator<T> TreeSet<T>::begin()
 {
-	return ForwardIterator(new TreeSetIteratorImpl(this->tree));
+	return ForwardIterator<T>(new TreeSet<T>::TreeSetIteratorImpl(tree.get()));
+}
+
+template<typename T>
+ForwardIterator<T> TreeSet<T>::end()
+{
+	return ForwardIterator<T>(new TreeSet<T>::TreeSetIteratorImpl(nullptr));
 }
 
 template<typename T>

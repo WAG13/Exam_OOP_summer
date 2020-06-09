@@ -39,6 +39,7 @@ public:
 	void insertSymmetricDiff(Set* s1, Set* s2);
 
 	virtual ForwardIterator<T> begin() = 0;
+	virtual ForwardIterator<T> end() = 0;
 
 private:
 };
@@ -49,12 +50,12 @@ void Set<T>::insertUnion(Set* s1, Set* s2)
 	auto it1 = s1->begin();
 	auto it2 = s2->begin();
 
-	while (!it1.isEnd())
+	while (it1 != s1->end())
 	{
 		insert(*it1);
 		++it1;
 	}
-	while (!it2.isEnd())
+	while (it2 != s2->end())
 	{
 		if (!s1->contains(*it2))
 			insert(*it2);
@@ -68,7 +69,7 @@ void Set<T>::insertIntersection(Set* s1, Set* s2)
 	auto it1 = s1->begin();
 	auto it2 = s2->begin();
 
-	while (!it1.isEnd())
+	while (it1 != s1->end())
 	{
 		if (s2->contains(*it1))
 			insert(*it1);
@@ -82,7 +83,7 @@ void Set<T>::insertComplement(Set* s1, Set* s2)
 	auto it1 = s1->begin();
 	auto it2 = s2->begin();
 
-	while (!it1.isEnd())
+	while (it1 != s1->end())
 	{
 		if (!s2->contains(*it1))
 			insert(*it1);
@@ -96,14 +97,14 @@ void Set<T>::insertSymmetricDiff(Set* s1, Set* s2)
 	auto it1 = s1->begin();
 	auto it2 = s2->begin();
 
-	while (!it1.isEnd())
+	while (it1 != s1->end())
 	{
 		if (!s2->contains(*it1))
 			insert(*it1);
 		++it1;
 	}
 
-	while (!it2.isEnd())
+	while (it2 != s2->end())
 	{
 		if (!s1->contains(*it2))
 			insert(*it2);
