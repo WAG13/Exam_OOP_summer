@@ -16,7 +16,7 @@ public:
 	virtual bool contains(KeyT const& key, ValueT const& value) const = 0;
 	virtual std::vector<ValueT> find(KeyT const& key) const = 0;
 	virtual std::vector<std::pair<KeyT, ValueT>> getAllItems() const = 0;
-	virtual void enableTwoChoiceHashing(std::function<size_t(KeyT const&, size_t)> _second_hash) = 0;
+	virtual void enableTwoChoiceHashing(std::function<size_t(KeyT const&, size_t, size_t)> _second_hash) = 0;
 	virtual void disableTwoChoiceHashing() = 0;
 	virtual void rehash(size_t add_count) = 0;
 	virtual ~HashTable() {}

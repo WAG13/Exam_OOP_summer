@@ -104,7 +104,7 @@ TEST_CASE("List")
 TEST_CASE("Hash")
 {
     SUBCASE("Separate hashing") {
-        auto hash = new BucketHashTable<int, int, std::vector<std::pair<int, int>>> { [](int const& v, size_t bucket_count) { return size_t(v) % bucket_count; }, 7 };
+        auto hash = new BucketHashTable<int, int, std::vector<std::pair<int, int>>> { [](int const& v, size_t index, size_t bucket_count) { return size_t(v) % bucket_count; }, 7 };
         REQUIRE(hash->capacity() == 7);
 
         hash->insert(2, 13);
@@ -123,7 +123,7 @@ TEST_CASE("Hash")
         REQUIRE(hash->find(2) == std::vector<int>{});
         REQUIRE(hash->size() == 2);
 
-        hash->enableTwoChoiceHashing([](int const& v, size_t bucket_count) { return (size_t(v) * size_t(v)) % bucket_count; });
+        hash->enableTwoChoiceHashing([](int const& v, size_t index, size_t bucket_count) { return (size_t(v) * size_t(v)) % bucket_count; });
         hash->insert(2, 8);
         hash->insert(2, 9);
         hash->insert(2, 10);
@@ -142,7 +142,7 @@ TEST_CASE("Hash")
 
     SUBCASE("Coalesced hashing")
     {
-		auto hash = new CoalescedHashTable<int, int>{ [](int const& v, size_t bucket_count) { return size_t(v) % bucket_count; }, 7 };
+		auto hash = new CoalescedHashTable<int, int>{ [](int const& v, size_t index, size_t bucket_count) { return size_t(v) % bucket_count; }, 7 };
 		REQUIRE(hash->capacity() == 7);
 
 		hash->insert(2, 13);
