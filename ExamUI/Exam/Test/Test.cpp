@@ -12,6 +12,7 @@
 #include "../Maps/TreeMap.h"
 #include "../Maps/StandardMap.h"
 #include "../Maps/ListMap.h"
+#include "../Sets/ListSet.h"
 #include "../Sets/TreeSet.h"
 #include "../Sets/VectorSet.h"
 #include "../Iterator.h"
@@ -324,6 +325,20 @@ void testSet(Set<T>* set)
 
 TEST_CASE("Set")
 {
+	SUBCASE("Doubly Linked List Set")
+	{
+		std::unique_ptr<SetListType<int>> listType(new SetListTypeDouble<int>());
+		std::unique_ptr<Set<int>> listMap(new ListSet(listType.get()));
+		testSet(listMap.get());
+	}
+
+	SUBCASE("Doubly Linked Circular List Set")
+	{
+		std::unique_ptr<SetListType<int>> listType(new SetListTypeDoubleCircular<int>());
+		std::unique_ptr<Set<int>> listMap(new ListSet(listType.get()));
+		testSet(listMap.get());
+	}
+
 	SUBCASE("AVL Tree Set")
 	{
 		std::unique_ptr<SetTreeType<int>> treeType(new SetTreeTypeAVL<int>());
