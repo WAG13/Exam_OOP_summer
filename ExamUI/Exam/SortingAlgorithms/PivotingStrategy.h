@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Diagnostics/Random.h>
+#include "../Data/Random.h"
 #include <vector>
 
 using std::vector;
