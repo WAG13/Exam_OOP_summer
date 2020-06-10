@@ -12,19 +12,16 @@ using SetHashType = HashType<T, T>;
 template <typename T>
 class HashSet : public Set<T> {
 private:
-	HashTable* table;
+	HashTable<T, T>* table;
 	CapacityGrowPolicy* grow_policy;
-
-	size_t defaultHash(KeyT const& key, size_t index, size_t capacity) {
-		return (std::hash<KeyT>{}(key) + index) % capacity;
-	}
 
 	struct HashSetIteratorImpl : public ForwardIteratorImpl<T>
 	{
 		std::vector<T> values;
 		size_t currentIndex = 0;
 		bool isNull = false;
-		TreeSetIteratorImpl(HashTable* table)
+
+		HashSetIteratorImpl(HashTable<T, T>* table)
 		{
 			if (!table) isNull = true;
 			else {
@@ -68,15 +65,21 @@ private:
 	};
 
 public:
-	HashSet(SetHashType<T>* hash_type, std::function<size_t(KeyT const&, size_t, size_t)> hash_func = defaultHash) :
+	HashSet(SetHashType<T>* hash_type, std::function<size_t(T const& key, size_t, size_t)> hash_func = 
+		[](T const& key, size_t index, size_t capacity) {
+		return (std::hash<T>{}(key)+index) % capacity;
+		}) :
 		table(hash_type->create(hash_func, 1)), grow_policy(new ExponentialGrowPolicy{}) {}
 
 	void insert(T const& element) override {
 		if (!table->insert(element, element)) {
 			if (!table->contains(element, element)) {
-				table->rehash(grow_policy->grow() - table->capacity);
+				table->rehash(grow_policy->grow() - table->capacity());
 				table->insert(element, element);
 			}
+		}
+		if (table->size() >= table->capacity()) {
+			table->rehash(grow_policy->grow() - table->capacity());
 		}
 	}
 
@@ -86,6 +89,14 @@ public:
 
 	bool contains(const T& element) override {
 		return table->contains(element, element);
+	}
+
+	ForwardIterator<T> begin() override {
+		return ForwardIterator<T>(new HashSet<T>::HashSetIteratorImpl(table));
+	}
+
+	virtual ForwardIterator<T> end() override {
+		return ForwardIterator<T>(new HashSet<T>::HashSetIteratorImpl(nullptr));
 	}
 
 	~HashSet() {
