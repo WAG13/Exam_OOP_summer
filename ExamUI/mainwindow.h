@@ -11,6 +11,7 @@
 #include "Exam/Data/DateTime.h"
 #include "Exam/Maps/Map.h"
 #include "Exam/Sets/Set.h"
+#include "Exam/SortingAlgorithms/SortingAlgorithms.h"
 #include "computationhandler.h"
 
 QT_BEGIN_NAMESPACE
@@ -53,19 +54,36 @@ private slots:
     ////////////////////////
 
     /// @brief Occurs on changing the implementation of Set
-    void on_KVReal_3_currentIndexChanged(int index);
+    void MainWindow::on_SetReal_currentIndexChanged(int index);
 
     /// @brief Occurs on pressing the "Generate randomly" button
-    void on_pushButton_6_clicked();
+    void on_generateRandom2_clicked();
 
     /// @brief Occurs on pressing the "Add manually" button
-    void on_pushButton_5_clicked();
+    void on_addDateTime2_clicked();
 
     /// @brief Occurs on selecting desired operation (for one Set)
     void on_pushButton_2_clicked();
 
     /// @brief Occurs on selecting desired operation (for both Sets)
     void on_pushButton_3_clicked();
+
+
+    ////////////////////////
+    /// TAB 3 (Sort)
+    ////////////////////////
+
+    /// @brief Occurs on changing the implementation of Sort
+    //void on_KVReal_currentIndexChanged(int index);
+
+    /// @brief Occurs on pressing the "Generate randomly" button
+    void on_generateRandom3_clicked();
+
+    /// @brief Occurs on pressing the "Add manually" button
+    void on_addDateTime3_clicked();
+
+    /// @brief Occurs on selecting desired operation
+    void on_pushButton3_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -109,5 +127,20 @@ private:
     bool update = false;
     void handleRemoval(qint64 milliseconds);
     void updateModels(bool setB);
+
+    ///////////////////////
+    /// TAB 3 (Sort)
+    ////////////////////////
+
+    QMutex sortMutex;
+    Set<DateTime>* getSort(int typeID);
+    std::vector<DateTime> sortDateTime;
+    Set<DateTime>* intDateSort = nullptr;
+    QStandardItemModel* sortDateTimeModel;
+
+    void addSortDateTime(const DateTime& dateTime);
+    void addSortDateTime(const std::vector<DateTime>& dateTimes);
+    void resetSorts(int typeID);
+
 };
 #endif // MAINWINDOW_H
