@@ -13,7 +13,7 @@ private:
 
 public:
 	size_t grow() override {
-		return pow(2, power) + 1;
 		power++;
+		return static_cast<size_t>(pow(2, power) + 1);
 	}
 };

@@ -139,6 +139,8 @@ TEST_CASE("Hash")
         hash->rehash(4);
         //key 14 moves to the 3-rd bucket
         REQUIRE(hash->getAllItems() == std::vector<std::pair<int, int>>{ { 1, 2 }, { 2, 8 }, { 2, 10 }, { 2, 9 }, { 14, 5 } });
+
+		delete hash;
     }
 
     SUBCASE("Coalesced hashing")
@@ -163,6 +165,8 @@ TEST_CASE("Hash")
 		//the table rehashes
 		hash->remove(2, 13);
 		REQUIRE(hash->getAllItems() == std::vector<std::pair<int, int>>{ { 14, 5 }, { 1, 2 }, { 2, 15 } });
+
+		delete hash;
     }
 
     SUBCASE("Hopscotch hashing")
@@ -404,5 +408,58 @@ TEST_CASE("Set")
 		REQUIRE(!treeSetSymmDiff->contains(4));
 		REQUIRE(treeSetSymmDiff->contains(5));
 		REQUIRE(treeSetSymmDiff->contains(6));
+	}
+
+	SUBCASE("Hash Set") {
+		HashType<std::string, std::string>* hash1 = 
+			new SeparateHash<std::string, std::string, std::vector<std::pair<std::string, std::string>>>{};
+		auto set1 = new HashSet<std::string>{ hash1 };
+
+		set1->insert("one");
+		set1->insert("two");
+		set1->insert("three");
+		REQUIRE(set1->contains("one"));
+		REQUIRE(set1->contains("two"));
+		REQUIRE(set1->contains("three"));
+		set1->insert("five");
+		set1->remove("one");
+		REQUIRE(!set1->contains("one"));
+
+		HashType<std::string, std::string>* hash2 =
+			new CoalescedHash<std::string, std::string>{};
+		auto set2 = new HashSet<std::string>{ hash2 };
+
+		set2->insert("one");
+		set2->insert("four");
+		set2->insert("three");
+
+		HashSet<std::string> set3{ hash2 };
+		set3.insertUnion(set1, set2);
+		REQUIRE(set3.contains("one"));
+		REQUIRE(set3.contains("two"));
+		REQUIRE(set3.contains("three"));
+		REQUIRE(set3.contains("four"));
+		REQUIRE(set3.contains("five"));
+
+		HashSet<std::string> set4{ hash1 };
+		set4.insertIntersection(set1, set2);
+		REQUIRE(set4.contains("three"));
+		REQUIRE(!set4.contains("one"));
+		REQUIRE(!set4.contains("two"));
+		REQUIRE(!set4.contains("four"));
+		REQUIRE(!set4.contains("five"));
+
+		HashSet<std::string> set5{ hash2 };
+		set5.insertSymmetricDiff(set1, set2);
+		REQUIRE(!set5.contains("three"));
+		REQUIRE(set5.contains("one"));
+		REQUIRE(set5.contains("two"));
+		REQUIRE(set5.contains("four"));
+		REQUIRE(set5.contains("five"));
+
+		delete hash1;
+		delete hash2;
+		delete set1;
+		delete set2;
 	}
 }
