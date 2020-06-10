@@ -201,7 +201,9 @@ public:
 		return new QuickSort<T>(this);
 	}
 
-	~QuickSort() override {}
+	~QuickSort() override {
+		delete pivoting_strategy;
+	}
 };
 
 template <typename T>
@@ -310,4 +312,55 @@ public:
 	}
 
 	~TreeSort() override {}
+};
+
+template <typename T>
+class HeapSort : public Sorting<T>
+{
+private:
+	void heapify(std::vector<T>& sample, size_t size, size_t first, size_t index) const
+	{
+		size_t largest = index;
+		size_t left = 2 * largest + 1, right = 2 * largest + 2;
+
+		if (left < size && !Sorting<T>::comparator(sample[first + left], sample[first + largest])) {
+			largest = left;
+		}
+
+		if (right < size && !Sorting<T>::comparator(sample[first + right], sample[first + largest])) {
+			largest = right;
+		}
+
+		if (largest != index)
+		{
+			std::swap(sample[first + index], sample[first + largest]);
+			heapify(sample, size, first, largest);
+		}
+	}
+
+public:
+	HeapSort() {}
+
+	HeapSort(const HeapSort<T>* source) : Sorting<T>(source) {}
+
+	void sort(vector<T>& sample, size_t first, size_t last) const override
+	{
+		size_t size = last - first + 1;
+		for (size_t i = size / 2 - 1; i != SIZE_MAX; i--) {
+			heapify(sample, size, first, i);
+		}
+
+		for (size_t i = size - 1; i > 0; i--)
+		{
+			std::swap(sample[first], sample[first + i]);
+			heapify(sample, i, first, 0);
+		}
+	}
+
+	Sorting<T>* clone() const override
+	{
+		return new HeapSort<T>(this);
+	}
+
+	~HeapSort() override {}
 };
