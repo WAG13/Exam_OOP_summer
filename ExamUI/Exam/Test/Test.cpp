@@ -16,6 +16,7 @@
 #include "../Sets/ListSet.h"
 #include "../Sets/TreeSet.h"
 #include "../Sets/VectorSet.h"
+#include "../SortingAlgorithms/SortingAlgorithms.h"
 #include "../Iterator.h"
 #include <memory>
 #include <vector>
@@ -240,6 +241,15 @@ TEST_CASE("Sorting")
     SUBCASE("Radix Sort")
     {
     }
+
+	SUBCASE("Tree Sort")
+	{
+		Sorting<int>* sorting = new TreeSort<int>();
+		sorting->setComparator([](int const& left, int const& right) { return left > right; });
+		std::vector<int> v{ 5, 7, -3, 4, 0, 4 };
+		sorting->sort(v, 1, 5);
+		REQUIRE(v == std::vector<int>{ 5, 7, 4, 4, 0, -3 });
+	}
 }
 
 template<typename ValueT, typename KeyT>

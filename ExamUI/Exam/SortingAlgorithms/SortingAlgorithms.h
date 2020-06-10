@@ -1,6 +1,9 @@
 #pragma once
 
 #include "PivotingStrategy.h"
+#include "../Trees/SearchTree.h"
+#include "../Trees/AVLTree.h"
+#include <functional>
 #include <stdexcept>
 #include <vector>
 using std::vector;
@@ -272,4 +275,39 @@ public:
 	}
 
 	~MergeSort() override {}
+};
+
+template <typename T>
+class TreeSort : public Sorting<T>
+{
+public:
+	TreeSort() {}
+
+	TreeSort(const TreeSort<T>* source) : Sorting<T>(source) {}
+
+	void sort(vector<T>& sample, size_t first, size_t last) const override
+	{
+		std::function<bool(T const&, T const&)> comparator_bind = [=](T const& a, T const& b) {
+			return Sorting<T>::comparator(a, b);
+		};
+		lists::AVLTree<T, T>* treePtr = new lists::AVLTree<T, T>(lists::detail::getValueAsKey<T>, comparator_bind);
+		std::unique_ptr<lists::SearchTree<T, T>> tree(treePtr);
+		for (size_t i = first; i <= last; i++) {
+			tree.get()->add(sample[i]);
+		}
+		std::vector<T> result;
+		tree->forEach([&result](const T& elem) {
+			result.push_back(elem);
+			});
+		for (size_t i = first; i <= last; i++) {
+			sample[i] = result[i - first];
+		}
+	}
+
+	Sorting<T>* clone() const override
+	{
+		return new TreeSort<T>(this);
+	}
+
+	~TreeSort() override {}
 };
