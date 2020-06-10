@@ -72,6 +72,9 @@ private slots:
     ////////////////////////
     /// TAB 3 (Sort)
     ////////////////////////
+    ///
+    /// @brief Occurs on changing the implementation of data structure
+    void on_SortReal_currentIndexChanged(int index);
 
     /// @brief Occurs on changing the implementation of Sort
     //void on_KVReal_currentIndexChanged(int index);
@@ -141,6 +144,7 @@ private:
     void addSortDateTime(const DateTime& dateTime);
     void addSortDateTime(const std::vector<DateTime>& dateTimes);
     void resetSorts(int typeID);
+    void resetSortStructures(int structID);
 
 };
 #endif // MAINWINDOW_H

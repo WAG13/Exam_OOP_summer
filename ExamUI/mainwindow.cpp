@@ -13,6 +13,7 @@
 #include <QDate>
 #include <QTime>
 #include <memory>
+#include <algorithm>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -35,6 +36,9 @@ MainWindow::MainWindow(QWidget *parent)
     resetSets(4);
 
     intDateSort = new VectorSet<DateTime>();
+
+    resetSorts(4);
+    resetSortStructures(0);
 }
 
 MainWindow::~MainWindow()
@@ -633,6 +637,20 @@ void MainWindow::resetSorts(int typeID)
     sortDateTimeModel->clear();
 }
 
+void MainWindow::resetSortStructures(int structID)
+{
+    if (structID < 2)
+    {
+        ui->sortType->hide();
+        ui->label_14->hide();
+    }
+    else
+    {
+        ui->sortType->show();
+        ui->label_14->show();
+    }
+}
+
 void MainWindow::on_generateRandom3_clicked()
 {
     static RandomDataGenerator<DateTime> dataGen;
@@ -676,6 +694,11 @@ void MainWindow::addSortDateTime(const std::vector<DateTime> &dateTimes)
         addSortDateTime(dateTime);
 }
 
+void MainWindow::on_SortReal_currentIndexChanged(int index)
+{
+    resetSortStructures(index);
+}
+
 void MainWindow::on_pushButton3_clicked()
 {
 
@@ -714,6 +737,10 @@ void MainWindow::on_pushButton3_clicked()
     case 6:
         sorting = std::make_unique<QuickSort<DateTime>>(new MedianOfThreePivot<DateTime>());
     }
+
+    int n = ui->nValue->value();
+    int pos = ui->Position->value();
+
     switch (kryt)
     {
     case 0:
@@ -731,19 +758,107 @@ void MainWindow::on_pushButton3_clicked()
         {
             QVector<QString> result;
             std::vector<DateTime> array;
-            sortMutex.lock();
             std::unique_ptr<Set<DateTime>> set(getSet(setImpl));
             for (auto it = intDateSort->begin(); it != set->end(); it++)
                 array.push_back(*it);
+
+            sortMutex.lock();
             sorting.get()->sort(array, 0, array.size() - 1);
+            sortMutex.unlock();
+
             for (auto date : array) {
                 result.push_back(QString::fromStdString(date.toString()));
             }
-            sortMutex.unlock();
+
             return result;
         });
         break;
 
+    case 1: //n elements at end
+        runComputationOnCurrentTab([&]()
+        {
+            QVector<QString> result;
+            std::vector<DateTime> array;
+            std::unique_ptr<Set<DateTime>> set(getSet(setImpl));
+            for (auto it = intDateSort->begin(); it != set->end(); it++)
+                array.push_back(*it);
+
+            sortMutex.lock();
+            sorting.get()->sort(array, 0, array.size() - 1);
+            sortMutex.unlock();
+
+            n = std::min((size_t)n, array.size());
+
+            for (size_t i = array.size() - n; i < array.size(); i++) {
+                result.push_back(QString::fromStdString(array[i].toString()));
+            }
+
+            return result;
+        });
+        break;
+    case 2: //n elements at start
+        runComputationOnCurrentTab([&]()
+        {
+            QVector<QString> result;
+            std::vector<DateTime> array;
+            std::unique_ptr<Set<DateTime>> set(getSet(setImpl));
+            for (auto it = intDateSort->begin(); it != set->end(); it++)
+                array.push_back(*it);
+
+            sortMutex.lock();
+            sorting.get()->sort(array, 0, array.size() - 1);
+            sortMutex.unlock();
+
+            n = std::min((size_t)n, array.size());
+
+            for (size_t i = 0; i < n; i++) {
+                result.push_back(QString::fromStdString(array[i].toString()));
+            }
+            return result;
+        });
+        break;
+    case 3: //n elements from middle
+        runComputationOnCurrentTab([&]()
+        {
+            QVector<QString> result;
+            std::vector<DateTime> array;
+            std::unique_ptr<Set<DateTime>> set(getSet(setImpl));
+            for (auto it = intDateSort->begin(); it != set->end(); it++)
+                array.push_back(*it);
+
+            sortMutex.lock();
+            sorting.get()->sort(array, 0, array.size() - 1);
+            sortMutex.unlock();
+
+            n = std::min((size_t)n, array.size());
+
+            for (size_t i = array.size() / 2 - n / 2; i < array.size() / 2 - n / 2 + n; i++) {
+                result.push_back(QString::fromStdString(array[i].toString()));
+            }
+            return result;
+        });
+        break;
+    case 4: //n elements starting at position
+        runComputationOnCurrentTab([&]()
+        {
+            QVector<QString> result;
+            std::vector<DateTime> array;
+            std::unique_ptr<Set<DateTime>> set(getSet(setImpl));
+            for (auto it = intDateSort->begin(); it != set->end(); it++)
+                array.push_back(*it);
+
+            sortMutex.lock();
+            sorting.get()->sort(array, 0, array.size() - 1);
+            sortMutex.unlock();
+
+            n = std::min((size_t)n, array.size() - pos);
+
+            for (size_t i = pos; i < pos + n; i++) {
+                result.push_back(QString::fromStdString(array[i].toString()));
+            }
+            return result;
+        });
+        break;
     }
 
     sortDateTimeModel->clear();
