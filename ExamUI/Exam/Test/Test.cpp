@@ -12,7 +12,6 @@
 #include "../Maps/TreeMap.h"
 #include "../Maps/StandardMap.h"
 #include "../Maps/ListMap.h"
-#include "../Sets/HashSet.h"
 #include "../Sets/TreeSet.h"
 #include "../Sets/VectorSet.h"
 #include "../Iterator.h"
