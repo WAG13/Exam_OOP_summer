@@ -216,14 +216,28 @@ TEST_CASE("Sorting")
 
     SUBCASE("Selection Sort")
     {
+		std::unique_ptr<Sorting<int>> sorting = std::make_unique<SelectionSort<int>>();
+		sorting->setComparator([](int const& left, int const& right) { return left > right; });
+		std::vector<int> v{ 45, -5, 4, -7, 7, 7, 9 };
+		sorting.get()->sort(v, 0, 6);
+		REQUIRE(v == std::vector{ 45, 9, 7, 7, 4, -5, -7 });
     }
 
     SUBCASE("Heap Sort")
     {
+		std::unique_ptr<Sorting<int>> sorting = std::make_unique<HeapSort<int>>();
+		sorting->setComparator([](int const& left, int const& right) { return left > right; });
+		std::vector<int> v{ 45, -5, 4, -7, 7, 7, 9 };
+		sorting.get()->sort(v, 0, 6);
+		REQUIRE(v == std::vector{ 45, 9, 7, 7, 4, -5, -7 });
     }
 
     SUBCASE("Merge Sort")
     {
+		std::unique_ptr<Sorting<int>> sorting = std::make_unique<MergeSort<int>>();
+		std::vector<int> v{ 45, -5, 4, -7, 7, 7, 9 };
+		sorting.get()->sort(v, 0, 6);
+		REQUIRE(v == std::vector{ -7, -5, 4, 7, 7, 9, 45 });
     }
 
     SUBCASE("Bucket Sort")
@@ -232,10 +246,18 @@ TEST_CASE("Sorting")
 
     SUBCASE("Insertion Sort")
     {
+		std::unique_ptr<Sorting<int>> sorting = std::make_unique<InsertionSort<int>>();
+		std::vector<int> v{ 45, -5, 4, -7, 7, 7, 9 };
+		sorting.get()->sort(v, 0, 6);
+		REQUIRE(v == std::vector{ -7, -5, 4, 7, 7, 9, 45 });
     }
 
     SUBCASE("Quicksort")
     {
+		std::unique_ptr<Sorting<int>> sorting = std::make_unique<QuickSort<int>>(new MedianOfThreePivot<int>());
+		std::vector<int> v{ 45, -5, 4, -7, 7, 7, 9 };
+		sorting.get()->sort(v, 0, 6);
+		REQUIRE(v == std::vector{ -7, -5, 4, 7, 7, 9, 45 });
     }
 
     SUBCASE("Radix Sort")
