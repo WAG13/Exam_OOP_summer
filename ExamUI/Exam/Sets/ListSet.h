@@ -40,8 +40,6 @@ public:
 	ForwardIterator<T> begin() override;
 	ForwardIterator<T> end() override;
 
-	//TODO: set operatrions (merge, diff, ...)
-
 private:
 	std::unique_ptr<DoublyLinkedListBase<T, T>> list;
 
@@ -74,7 +72,7 @@ ForwardIterator<T> ListSet<T>::end()
 template<typename T>
 void ListSet<T>::insert(const T& value)
 {
-	list->insertNewNode(value);
+    list->insertNewNode(value);
 }
 
 template<typename T>

@@ -4,10 +4,11 @@
 #include "Exam/Data/DataGenerator.h"
 #include "Exam/Data/DateTime.h"
 #include "Exam/Maps/StandardMap.h"
-#include "Exam/Maps/ListMap.h"
 #include "Exam/Maps/TreeMap.h"
-#include "Exam/Sets/Set.h"
+#include "Exam/Maps/ListMap.h"
 #include "Exam/Sets/TreeSet.h"
+#include "Exam/Sets/ListSet.h"
+#include "Exam/Sets/HashSet.h"
 #include "Exam/Sets/VectorSet.h"
 #include <QDate>
 #include <QTime>
@@ -147,7 +148,6 @@ void MainWindow::resetMaps(int typeID)
         return result;
     });
 }
-
 
 void MainWindow::on_generateRandom1_clicked()
 {
@@ -310,32 +310,35 @@ void MainWindow::on_pushButton_clicked()
 Set<DateTime>* MainWindow::getSet(int typeID)
 {
     SetTreeType<DateTime>* setTreeType;
+    SetListType<DateTime>* setListType;
+    //SetHashType<DateTime>* setHashType;
+
     switch (typeID)
     {
+    case 0:
+        //Coalesced
+        //setHashType = new SetHashType<DateTime>();
+        //return new SetHashType<DateTime>(setHashType);
+    case 1:
+        //Hopscotch
+        //setHashType = new SetHashType<DateTime>();
+        //return new SetHashType<DateTime>(setHashType);
+    case 2:
+        //AVL
+        setTreeType = new SetTreeTypeAVL<DateTime>();
+        return new TreeSet<DateTime>(setTreeType);
     case 3:
         //B+
         setTreeType = new SetTreeTypeBPlus<DateTime>(500);
         return new TreeSet<DateTime>(setTreeType);
     case 4:
         //Doubly linked
-        setTreeType = new SetTreeTypeBPlus<DateTime>(500);
-        delete new TreeSet<DateTime>(setTreeType);
+        setListType = new SetListTypeDouble<DateTime>();
+        return new ListSet<DateTime>(setListType);
     case 5:
         //Doubly linked circular
-        setTreeType = new SetTreeTypeBPlus<DateTime>(500);
-        delete new TreeSet<DateTime>(setTreeType);
-    case 2:
-        //AVL
-        setTreeType = new SetTreeTypeAVL<DateTime>();
-        return new TreeSet<DateTime>(setTreeType);
-    case 0:
-        //Coalesced
-        setTreeType = new SetTreeTypeBPlus<DateTime>(500);
-        delete new TreeSet<DateTime>(setTreeType);
-    case 1:
-        //Hopscotch
-        setTreeType = new SetTreeTypeBPlus<DateTime>(500);
-        delete new TreeSet<DateTime>(setTreeType);
+        setListType = new SetListTypeDoubleCircular<DateTime>();
+        return new ListSet<DateTime>(setListType);
     case 6:
         //std::vector
         return new VectorSet<DateTime>();
@@ -372,7 +375,7 @@ void MainWindow::updateModels(bool setB)
     }
 }
 
-void MainWindow::on_pushButton_6_clicked()
+void MainWindow::on_generateRandom2_clicked()
 {
     static RandomDataGenerator<DateTime> dataGen;
     static DateTime min(2000, 1, 1, 0, 0, 0);
@@ -385,7 +388,7 @@ void MainWindow::on_pushButton_6_clicked()
     addSetDateTime(random, ui->KVReal_5->currentIndex());
 }
 
-void MainWindow::on_pushButton_5_clicked()
+void MainWindow::on_addDateTime2_clicked()
 {
     QDateTime qDateTime = ui->dateTimeEdit1->dateTime();
     DateTime dateTime = toDateTime(qDateTime);
@@ -472,7 +475,7 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_pushButton_3_clicked()
 {
-    int setImpl = ui->KVReal_3->currentIndex();
+    int setImpl = ui->SortReal->currentIndex();
     int type = ui->KVOperations_3->currentIndex();
     switch (type)
     {
@@ -558,3 +561,163 @@ void MainWindow::on_KVReal_3_currentIndexChanged(int index)
 {
     resetSets(index);
 }
+
+////////////////////////
+/// TAB 3 (Sort)
+////////////////////////
+/*
+Set<DateTime>* MainWindow::getSort(int typeID)
+{
+    SetTreeType<DateTime>* setTreeType;
+    SetListType<DateTime>* setListType;
+    switch (typeID)
+    {
+    case 0:
+        //AVL
+        setTreeType = new SetTreeTypeAVL<DateTime>();
+        return new TreeSet<DateTime>(setTreeType);
+    case 1:
+        //B+
+        setTreeType = new SetTreeTypeBPlus<DateTime>(500);
+        return new TreeSet<DateTime>(setTreeType);
+    case 2:
+        //Doubly linked
+        setListType = new SetListTypeDouble<DateTime>();
+        delete new ListSet<DateTime>(setListType);
+    case 3:
+        //Doubly linked circular
+        setListType = new SetListTypeDoubleCircular<DateTime>();
+        delete new ListSet<DateTime>(setListType);
+    case 4:
+        //std::vector
+        return new VectorSet<DateTime>();
+    }
+    return nullptr;
+
+}
+
+void MainWindow::resetSorts(int typeID)
+{
+    if (intDateSort)
+    {
+        delete intDateSort;
+        printMessage("Видаляємо контейнер");
+    }
+
+    intDateSort = getSort(typeID);
+
+    printMessage("Створили новий контейнер");
+
+    sortDateTimeModel->clear();
+}
+
+void MainWindow::on_generateRandom3_clicked()
+{
+    static RandomDataGenerator<DateTime> dataGen;
+    static DateTime min(2000, 1, 1, 0, 0, 0);
+    static DateTime max(2100, 1, 1, 0, 0, 0);
+
+    int count = ui->randomGenCount3->value();
+    std::vector<DateTime> random = dataGen.generateVector(min, max, count);
+    //printMessage("Додали " + QString::number(count) + " нових дат");
+
+    addSortDateTime(random);
+}
+
+void MainWindow::on_addDateTime3_clicked()
+{
+    QDateTime qDateTime = ui->dateTimeEdit3->dateTime();
+    DateTime dateTime = toDateTime(qDateTime);
+    //printMessage("Додали " + QString::fromStdString(dateTime.toString()));
+
+    addSortDateTime(dateTime);
+}
+
+void MainWindow::addSortDateTime(const DateTime &dateTime)
+{
+    Set<DateTime>* set;
+    QStandardItemModel* model;
+    QListView* view;
+
+    set = intDateSort;
+    model = sortDateTimeModel;
+    view = ui->listView_4;
+
+    if (!set->contains(dateTime))
+        set->insert(dateTime);
+    model->appendRow(new QStandardItem(QString::fromStdString(dateTime.toString())));
+}
+
+void MainWindow::addSortDateTime(const std::vector<DateTime> &dateTimes)
+{
+    for (DateTime dateTime : dateTimes)
+        addSortDateTime(dateTime);
+}
+
+void MainWindow::on_pushButton3_clicked()
+{
+
+    int type = ui->SortReal->currentIndex();
+    int setImpl = ui->sortType->currentIndex();
+    int operation = ui->SortOperations->currentIndex();
+    int kryt = ui->Kryt->currentIndex();
+    std::unique_ptr<Sorting<DateTime>> sorting;
+
+
+    std::vector<DateTime> result;
+    Set<DateTime>* set = intDateSort;
+    for (auto it = intDateSort->begin(); it != set->end(); it++)
+        result.push_back(*it);
+
+    switch (type)
+    {
+    case 0:
+        sorting = std::make_unique<SelectionSort<DateTime>>();
+        break;
+    case 1:
+        sorting = std::make_unique<HeapSort<DateTime>>();
+        break;
+    case 2:
+        sorting = std::make_unique<MergeSort<DateTime>>();
+        break;
+    case 3:
+        sorting = std::make_unique<InsertionSort<DateTime>>();
+        break;
+    case 4:
+        sorting = std::make_unique<QuickSort<DateTime>>();
+        break;
+    }
+    switch (kryt)
+    {
+    case 0:
+        sorting->setComparator([](DateTime const& left, DateTime const& right) { return left < right; });
+        break;
+    case 1:
+        sorting->setComparator([](DateTime const& left, DateTime const& right) { return left > right; });
+        break;
+    }
+
+    switch (operation)
+    {
+    case 0:
+        runComputationOnCurrentTab([&]()
+        {
+            QVector<QString> result;
+            std::vector<DateTime> array;
+            sortMutex.lock();
+            std::unique_ptr<Set<DateTime>> set(getSet(setImpl));
+            for (auto it = intDateSort->begin(); it != set->end(); it++)
+                array.push_back(*it);
+            sorting.get()->sort(array, 0, array.size());
+            sortMutex.unlock();
+            return result;
+        });
+        break;
+
+    }
+
+
+    addSortDateTime(result);
+
+}
+*/
