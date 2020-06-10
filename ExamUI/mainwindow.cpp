@@ -718,6 +718,9 @@ void MainWindow::on_pushButton3_clicked()
             for (auto it = intDateSort->begin(); it != set->end(); it++)
                 array.push_back(*it);
             sorting.get()->sort(array, 0, array.size() - 1);
+            for (auto date : array) {
+                result.push_back(QString::fromStdString(date.toString()));
+            }
             sortMutex.unlock();
             return result;
         });
