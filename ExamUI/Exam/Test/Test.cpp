@@ -249,6 +249,7 @@ TEST_CASE("Sorting")
 		std::vector<int> v{ 5, 7, -3, 4, 0, 4 };
 		sorting->sort(v, 1, 5);
 		REQUIRE(v == std::vector<int>{ 5, 7, 4, 4, 0, -3 });
+		delete sorting;
 	}
 }
 
