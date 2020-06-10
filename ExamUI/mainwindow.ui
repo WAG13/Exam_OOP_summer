@@ -967,13 +967,6 @@ QListView::item:selected {
             <item>
              <widget class="QListView" name="listView_4"/>
             </item>
-            <item>
-             <widget class="QPushButton" name="createSort">
-              <property name="text">
-               <string>Сортувати</string>
-              </property>
-             </widget>
-            </item>
            </layout>
           </item>
          </layout>
@@ -1164,7 +1157,17 @@ QListView::item:selected {
                </item>
                <item>
                 <property name="text">
-                 <string>Quicksort</string>
+                 <string>Quick Sort (random pivot)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Quick Sort (middle pivot)</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Quick Sort (median of three pivot)</string>
                 </property>
                </item>
               </widget>

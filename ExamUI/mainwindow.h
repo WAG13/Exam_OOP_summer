@@ -54,7 +54,7 @@ private slots:
     ////////////////////////
 
     /// @brief Occurs on changing the implementation of Set
-    void on_KVReal_3_currentIndexChanged(int index);
+    void MainWindow::on_SetReal_currentIndexChanged(int index);
 
     /// @brief Occurs on pressing the "Generate randomly" button
     void on_generateRandom2_clicked();
@@ -68,7 +68,7 @@ private slots:
     /// @brief Occurs on selecting desired operation (for both Sets)
     void on_pushButton_3_clicked();
 
-/*
+
     ////////////////////////
     /// TAB 3 (Sort)
     ////////////////////////
@@ -84,7 +84,6 @@ private slots:
 
     /// @brief Occurs on selecting desired operation
     void on_pushButton3_clicked();
-*/
 
 private:
     Ui::MainWindow *ui;
@@ -128,7 +127,7 @@ private:
     bool update = false;
     void handleRemoval(qint64 milliseconds);
     void updateModels(bool setB);
-/*
+
     ///////////////////////
     /// TAB 3 (Sort)
     ////////////////////////
@@ -141,7 +140,7 @@ private:
 
     void addSortDateTime(const DateTime& dateTime);
     void addSortDateTime(const std::vector<DateTime>& dateTimes);
-    void resetSorts(int typeID);*/
+    void resetSorts(int typeID);
 
 };
 #endif // MAINWINDOW_H

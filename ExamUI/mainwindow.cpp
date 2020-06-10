@@ -28,9 +28,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->listView_2->setModel(setDateTimeModelA);
     setDateTimeModelB = new QStandardItemModel();
     ui->listView_3->setModel(setDateTimeModelB);
+    sortDateTimeModel = new QStandardItemModel();
+    ui->listView_4->setModel(sortDateTimeModel);
 
     resetMaps(6);
     resetSets(4);
+
+    intDateSort = new VectorSet<DateTime>();
 }
 
 MainWindow::~MainWindow()
@@ -557,7 +561,7 @@ void MainWindow::handleRemoval(qint64 milliseconds)
         updateModels(updateSetB);
 }
 
-void MainWindow::on_KVReal_3_currentIndexChanged(int index)
+void MainWindow::on_SetReal_currentIndexChanged(int index)
 {
     resetSets(index);
 }
@@ -565,7 +569,7 @@ void MainWindow::on_KVReal_3_currentIndexChanged(int index)
 ////////////////////////
 /// TAB 3 (Sort)
 ////////////////////////
-/*
+
 Set<DateTime>* MainWindow::getSort(int typeID)
 {
     SetTreeType<DateTime>* setTreeType;
@@ -684,8 +688,13 @@ void MainWindow::on_pushButton3_clicked()
         sorting = std::make_unique<InsertionSort<DateTime>>();
         break;
     case 4:
-        sorting = std::make_unique<QuickSort<DateTime>>();
+        sorting = std::make_unique<QuickSort<DateTime>>(new RandomPivot<DateTime>());
         break;
+    case 5:
+        sorting = std::make_unique<QuickSort<DateTime>>(new MiddlePivot<DateTime>());
+        break;
+    case 6:
+        sorting = std::make_unique<QuickSort<DateTime>>(new MedianOfThreePivot<DateTime>());
     }
     switch (kryt)
     {
@@ -708,7 +717,7 @@ void MainWindow::on_pushButton3_clicked()
             std::unique_ptr<Set<DateTime>> set(getSet(setImpl));
             for (auto it = intDateSort->begin(); it != set->end(); it++)
                 array.push_back(*it);
-            sorting.get()->sort(array, 0, array.size());
+            sorting.get()->sort(array, 0, array.size() - 1);
             sortMutex.unlock();
             return result;
         });
@@ -716,8 +725,7 @@ void MainWindow::on_pushButton3_clicked()
 
     }
 
-
+    sortDateTimeModel->clear();
     addSortDateTime(result);
-
 }
-*/
+
