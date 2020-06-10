@@ -130,9 +130,9 @@ void MainWindow::resetMaps(int typeID)
         intDateMap = new ListMap<DateTime, int>(mapListType);
         break;
     case 0:
-        //Coalesced
+        //Separate
     case 1:
-        //Hopscotch
+        //Coalesced
     case 6:
         //std::map
         intDateMap = new StandardMap<DateTime, int>();
@@ -320,32 +320,50 @@ Set<DateTime>* MainWindow::getSet(int typeID)
     switch (typeID)
     {
     case 0:
-        //Coalesced
-        //setHashType = new SetHashType<DateTime>();
-        //return new SetHashType<DateTime>(setHashType);
+    {
+        //Separate
+        HashType<DateTime, DateTime>* hash1 = new SeparateHash<DateTime, DateTime, std::vector<std::pair<DateTime, DateTime>>>{};
+        return new HashSet<DateTime>{ hash1, [](DateTime const& key, size_t index, size_t capacity) {
+                return (std::hash<std::string>{}(key.toString())+index) % capacity;
+            }};
+    }
     case 1:
-        //Hopscotch
-        //setHashType = new SetHashType<DateTime>();
-        //return new SetHashType<DateTime>(setHashType);
+    {
+        //Coalesced
+        HashType<DateTime, DateTime>* hash2 = new CoalescedHash<DateTime, DateTime>{};
+        return new HashSet<DateTime>{ hash2, [](DateTime const& key, size_t index, size_t capacity) {
+                return (std::hash<std::string>{}(key.toString())+index) % capacity;
+            }};
+    }
     case 2:
+    {
         //AVL
         setTreeType = new SetTreeTypeAVL<DateTime>();
         return new TreeSet<DateTime>(setTreeType);
+    }
     case 3:
+    {
         //B+
         setTreeType = new SetTreeTypeBPlus<DateTime>(500);
         return new TreeSet<DateTime>(setTreeType);
+    }
     case 4:
+    {
         //Doubly linked
         setListType = new SetListTypeDouble<DateTime>();
         return new ListSet<DateTime>(setListType);
+    }
     case 5:
+    {
         //Doubly linked circular
         setListType = new SetListTypeDoubleCircular<DateTime>();
         return new ListSet<DateTime>(setListType);
+    }
     case 6:
+    {
         //std::vector
         return new VectorSet<DateTime>();
+    }
     }
     return nullptr;
 }

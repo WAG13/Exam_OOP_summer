@@ -230,7 +230,7 @@ QListView::item:selected {
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -388,12 +388,12 @@ QListView::item:selected {
               <widget class="QComboBox" name="KVReal">
                <item>
                 <property name="text">
-                 <string>хеш-таблиця (coalesced)</string>
+                 <string>хеш-таблиця (separate)</string>
                 </property>
                </item>
                <item>
                 <property name="text">
-                 <string>хеш-таблиця (hopscotch)</string>
+                 <string>хеш-таблиця (coalesced)</string>
                 </property>
                </item>
                <item>
@@ -705,12 +705,12 @@ QListView::item:selected {
               <widget class="QComboBox" name="SetReal">
                <item>
                 <property name="text">
-                 <string> хеш-таблиця (coalesced)</string>
+                 <string> хеш-таблиця (separate)</string>
                 </property>
                </item>
                <item>
                 <property name="text">
-                 <string> хеш-таблиця (hopscotch)</string>
+                 <string> хеш-таблиця (coalesced)</string>
                 </property>
                </item>
                <item>
