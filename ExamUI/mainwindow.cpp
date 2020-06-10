@@ -192,6 +192,7 @@ void MainWindow::addBaseMapDateTime(const std::vector<DateTime> &dateTimes)
 
 void MainWindow::on_createMap_clicked()
 {
+    ui->plainTextEdit_2->clear();
     resetMaps(ui->KVReal->currentIndex());
 }
 

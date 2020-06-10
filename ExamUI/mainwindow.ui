@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1000</width>
+    <width>1050</width>
     <height>700</height>
    </rect>
   </property>
@@ -19,6 +19,26 @@
 	font: 10pt &quot;Arial&quot;;
 	color: rgb(240, 240, 240);
 	background-color: rgb(90, 80, 80)
+}
+
+/*TABLE*/
+QHeaderView::section {
+    background-color: rgb(74, 66, 66);
+    padding: 4px;
+    font-size: 12pt;
+    border-style: none;
+    border-bottom: 1px solid #eeeee8;
+    border-right: 1px solid #eeeee8;
+}
+
+QHeaderView::section:horizontal
+{
+    border-top: 1px solid #eeeee8;
+}
+
+QHeaderView::section:vertical
+{
+    border-left: 1px solid #eeeee8;
 }
 
 /*BUTTON*/
@@ -75,6 +95,7 @@ QComboBox::drop-down:hover {
 QSpinBox, QDateTimeEdit {
 	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(255, 166, 0, 50), stop:1 rgba(255, 85, 0, 150));
 border-radius:3px;
+min-height: 30px;
 max-width:230px;
 }
 QSpinBox::up-button,QDateTimeEdit::up-button {
@@ -243,8 +264,17 @@ QListView::item:selected {
                </property>
                <item row="0" column="0">
                 <widget class="QLabel" name="randomGenLabel">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>0</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Кількість:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                  </property>
                 </widget>
                </item>
@@ -272,6 +302,9 @@ QListView::item:selected {
                  </property>
                  <property name="text">
                   <string>Значення:</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                  </property>
                 </widget>
                </item>
@@ -331,7 +364,7 @@ QListView::item:selected {
          <widget class="QGroupBox" name="groupBox1">
           <property name="maximumSize">
            <size>
-            <width>400</width>
+            <width>450</width>
             <height>16777215</height>
            </size>
           </property>
@@ -526,8 +559,17 @@ QListView::item:selected {
                </property>
                <item row="0" column="0">
                 <widget class="QLabel" name="label">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>0</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Додати до</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                  </property>
                 </widget>
                </item>
@@ -632,7 +674,7 @@ QListView::item:selected {
           </property>
           <property name="maximumSize">
            <size>
-            <width>400</width>
+            <width>450</width>
             <height>16777215</height>
            </size>
           </property>
@@ -847,56 +889,48 @@ QListView::item:selected {
                <property name="labelAlignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
-               <item row="0" column="0" colspan="2">
-                <widget class="QComboBox" name="KVReal_6">
-                 <item>
-                  <property name="text">
-                   <string>випадкові дані</string>
-                  </property>
-                 </item>
-                 <item>
-                  <property name="text">
-                   <string>ввести вручну</string>
-                  </property>
-                 </item>
-                </widget>
-               </item>
-               <item row="1" column="0">
+               <item row="0" column="0">
                 <widget class="QLabel" name="label_23">
+                 <property name="minimumSize">
+                  <size>
+                   <width>100</width>
+                   <height>0</height>
+                  </size>
+                 </property>
                  <property name="text">
                   <string>Кількість:</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="1">
+               <item row="0" column="1">
                 <widget class="QSpinBox" name="spinBox_4">
                  <property name="minimum">
                   <number>1</number>
                  </property>
                 </widget>
                </item>
-               <item row="2" column="1">
+               <item row="1" column="1">
                 <widget class="QPushButton" name="pushButton_8">
                  <property name="text">
                   <string>Згенерувати</string>
                  </property>
                 </widget>
                </item>
-               <item row="3" column="0">
+               <item row="2" column="0">
                 <widget class="QLabel" name="label_24">
                  <property name="text">
                   <string>Значення:</string>
                  </property>
                 </widget>
                </item>
-               <item row="3" column="1">
+               <item row="2" column="1">
                 <widget class="QDateTimeEdit" name="dateTimeEdit_5">
                  <property name="displayFormat">
                   <string>dd.MM.yyyy hh:mm:ss</string>
                  </property>
                 </widget>
                </item>
-               <item row="4" column="1">
+               <item row="3" column="1">
                 <widget class="QPushButton" name="pushButton_7">
                  <property name="text">
                   <string>Додати</string>
@@ -928,7 +962,7 @@ QListView::item:selected {
          <widget class="QGroupBox" name="groupBox1_3">
           <property name="maximumSize">
            <size>
-            <width>400</width>
+            <width>450</width>
             <height>16777215</height>
            </size>
           </property>
